@@ -76,11 +76,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getBiometricosRegistrados: (escritorioId) => ipcRenderer.invoke('offline-get-biometricos-registrados', escritorioId),
   },
 
-  // ==========================================
-  // Logger & Debug
-  // ==========================================
-  logError: (errorInfo) => ipcRenderer.send('log-error', errorInfo),
-
   // Control de sincronización
   syncManager: {
     getStatus: () => ipcRenderer.invoke('sync-status'),
