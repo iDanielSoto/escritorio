@@ -5,6 +5,8 @@ import {
   Clock,
   Calendar,
   AlertCircle,
+  AlertTriangle,
+  Timer,
   Bell,
   X,
   Settings,
@@ -393,13 +395,31 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
         />
       )}
 
-      {/* Indicador de cierre de sesión inminente */}
+      {/* Indicador de cierre de sesión inminente (Estilo Minimalista Afiliación) */}
       {timeLeft <= 5 && (
-        <div className="fixed bottom-6 right-6 bg-red-600/90 backdrop-blur-sm text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-bounce z-[9999] border border-red-500/50">
-          <Clock className="w-6 h-6 animate-pulse" />
-          <span className="font-semibold tracking-wide">
-            Cerrando sesión automática en {timeLeft}s por inactividad
-          </span>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-bg-primary/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+          <div className="max-w-xl w-full px-6 py-12 animate-slide-up">
+            <div className="bg-bg-secondary/40 border border-border-subtle rounded-lg p-12 text-center shadow-xl relative overflow-hidden group">
+              <div className="relative z-10 flex flex-col items-center">
+                <h2 className="text-xs font-semibold text-error uppercase tracking-[0.2em] mb-3">
+                  Inactividad Detectada
+                </h2>
+                <h1 className="text-3xl font-light tracking-tight mb-4">
+                  Cerrando <span className="font-semibold text-error/80">Sesión...</span>
+                </h1>
+
+                <p className="text-text-tertiary text-sm max-w-sm mb-8 leading-relaxed">
+                  Por seguridad, la sesión finalizará automáticamente en <strong className="text-error font-bold">{timeLeft}s</strong>.
+                </p>
+
+                <button
+                  className="group px-10 py-3.5 bg-bg-primary border border-border-subtle hover:border-text-secondary text-text-primary rounded-lg font-semibold transition-all duration-300 shadow-sm flex items-center gap-3 active:scale-95 cursor-pointer"
+                >
+                  Continuar sesión activa
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
