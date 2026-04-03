@@ -142,7 +142,7 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
 
   // Monitor de inactividad (15 segundos)
   const onLogoutRef = React.useRef(onLogout);
-  
+
   // Actualizar la referencia siempre que la prop cambie
   useEffect(() => {
     onLogoutRef.current = onLogout;
@@ -172,7 +172,7 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
     // Verificar inactividad cada segundo
     const verifyInactivity = setInterval(() => {
       const remaining = INACTIVITY_TIMEOUT - Math.floor((Date.now() - lastActivityTime) / 1000);
-      
+
       if (remaining <= 0) {
         clearInterval(verifyInactivity);
         if (onLogoutRef.current) {
@@ -415,7 +415,7 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
                 <button
                   className="group px-10 py-3.5 bg-bg-primary border border-border-subtle hover:border-text-secondary text-text-primary rounded-lg font-semibold transition-all duration-300 shadow-sm flex items-center gap-3 active:scale-95 cursor-pointer"
                 >
-                  Continuar sesión activa
+                  Mantener sesión activa
                 </button>
               </div>
             </div>
