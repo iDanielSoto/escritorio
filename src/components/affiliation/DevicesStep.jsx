@@ -68,18 +68,17 @@ export default function DevicesStep({
 
             {/* Status Alert Area inside static header */}
             {detectionStatus && (
-              <div className={`mt-6 p-4 rounded-lg flex items-center gap-3 border shadow-sm animate-fade-in ${
-                detectionStatus.type === "success" ? "bg-success/5 border-success/20 text-success" :
-                detectionStatus.type === "error" ? "bg-error/5 border-error/20 text-error" :
-                detectionStatus.type === "warning" ? "bg-warning/5 border-warning/20 text-warning" :
-                "bg-accent/5 border-accent/20 text-accent"
-              }`}>
+              <div className={`mt-6 p-4 rounded-lg flex items-center gap-3 border shadow-sm animate-fade-in ${detectionStatus.type === "success" ? "bg-success/5 border-success/20 text-success" :
+                  detectionStatus.type === "error" ? "bg-error/5 border-error/20 text-error" :
+                    detectionStatus.type === "warning" ? "bg-warning/5 border-warning/20 text-warning" :
+                      "bg-accent/5 border-accent/20 text-accent"
+                }`}>
                 {detectionStatus.type === "success" && <CheckCircle2 className="w-5 h-5" />}
                 {detectionStatus.type === "error" && <AlertCircle className="w-5 h-5" />}
                 {detectionStatus.type === "warning" && <AlertCircle className="w-5 h-5" />}
                 {detectionStatus.type === "info" && <Usb className="w-5 h-5" />}
-                <span className="text-sm font-medium">{detectionStatus.message}</span>
-                <button onClick={() => setDetectionStatus(null)} className="ml-auto p-1 hover:bg-black/5 rounded-full transition-colors">
+                <span className="text-sm font-medium truncate flex-1" title={detectionStatus.message}>{detectionStatus.message}</span>
+                <button onClick={() => setDetectionStatus(null)} className="ml-auto p-1.5 flex-shrink-0 hover:bg-black/5 rounded-full transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -96,21 +95,20 @@ export default function DevicesStep({
                   {devices.map((device) => (
                     <div
                       key={device.id}
-                      className={`group relative bg-bg-secondary/40 border rounded-lg p-5 transition-all duration-300 hover:shadow-md ${
-                        device.detected ? "border-success/30 ring-1 ring-success/10" : "border-border-subtle"
-                      }`}
+                      className={`group relative bg-bg-secondary/40 border rounded-lg p-5 transition-all duration-300 hover:shadow-md ${device.detected ? "border-success/30 ring-1 ring-success/10" : "border-border-subtle"
+                        }`}
                     >
                       {/* Device Badge */}
                       <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2">
-                          <div className={`p-2 rounded-lg ${device.detected ? 'bg-success/10 text-success' : 'bg-accent/5 text-accent'}`}>
-                             {device.type === 'facial' ? <Camera className="w-4 h-4" /> : <Usb className="w-4 h-4" />}
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          <div className={`p-2 rounded-lg flex-shrink-0 ${device.detected ? 'bg-success/10 text-success' : 'bg-accent/5 text-accent'}`}>
+                            {device.type === 'facial' ? <Camera className="w-4 h-4" /> : <Usb className="w-4 h-4" />}
                           </div>
-                          <div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary block leading-none mb-1">
+                          <div className="min-w-0">
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary block leading-none mb-1 truncate" title={device.detected ? "Detectado vía " + device.connection : "Configuración Manual"}>
                               {device.detected ? "Detectado vía " + device.connection : "Configuración Manual"}
                             </span>
-                            <h4 className="font-semibold text-sm">{device.name || "Nuevo Dispositivo"}</h4>
+                            <h4 className="font-semibold text-sm truncate" title={device.name || "Nuevo Dispositivo"}>{device.name || "Nuevo Dispositivo"}</h4>
                           </div>
                         </div>
                         <button
@@ -129,6 +127,7 @@ export default function DevicesStep({
                             value={device.name}
                             onChange={(e) => updateDevice(device.id, "name", e.target.value)}
                             placeholder="Ej. Cámara Sur"
+                            maxLength={55}
                             className="w-full px-3 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
                           />
                         </div>
@@ -153,39 +152,39 @@ export default function DevicesStep({
                           </select>
                         </div>
                         {device.connection === "IP" ? (
-                           <div className="flex gap-2">
-                             <div className="flex-1">
-                                <label className="block text-[10px] font-bold text-text-tertiary uppercase mb-1.5 ml-1">IP / Puerto</label>
-                                <div className="flex items-center gap-1">
-                                  <input
-                                    type="text"
-                                    value={device.ip}
-                                    onChange={(e) => updateDevice(device.id, "ip", e.target.value)}
-                                    placeholder="192.168..."
-                                    className="w-full px-3 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs font-mono focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
-                                  />
-                                  <span className="text-text-tertiary">:</span>
-                                  <input
-                                    type="text"
-                                    value={device.port}
-                                    onChange={(e) => updateDevice(device.id, "port", e.target.value)}
-                                    placeholder="80"
-                                    className="w-16 px-2 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs font-mono focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
-                                  />
-                                </div>
-                             </div>
-                           </div>
+                          <div className="flex gap-2">
+                            <div className="flex-1">
+                              <label className="block text-[10px] font-bold text-text-tertiary uppercase mb-1.5 ml-1">IP / Puerto</label>
+                              <div className="flex items-center gap-1">
+                                <input
+                                  type="text"
+                                  value={device.ip}
+                                  onChange={(e) => updateDevice(device.id, "ip", e.target.value)}
+                                  placeholder="192.168..."
+                                  className="w-full px-3 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs font-mono focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
+                                />
+                                <span className="text-text-tertiary">:</span>
+                                <input
+                                  type="text"
+                                  value={device.port}
+                                  onChange={(e) => updateDevice(device.id, "port", e.target.value)}
+                                  placeholder="80"
+                                  className="w-16 px-2 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs font-mono focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
+                                />
+                              </div>
+                            </div>
+                          </div>
                         ) : (
                           <div className="flex items-end">
-                             <div className="w-full px-3 py-2 bg-bg-primary/30 border border-border-subtle/50 rounded-lg text-[10px] text-text-tertiary italic flex items-center gap-2">
-                               <Usb className="w-3 h-3" /> Plug and Play habilitado
-                             </div>
+                            <div className="w-full px-3 py-2 bg-bg-primary/30 border border-border-subtle/50 rounded-lg text-[10px] text-text-tertiary italic flex items-center gap-2">
+                              <Usb className="w-3 h-3" /> Plug and Play habilitado
+                            </div>
                           </div>
                         )}
                       </div>
                     </div>
                   ))}
-                  
+
                   {/* Search Card / Trigger */}
                   <button
                     onClick={() => detectAllDevices(true)}
