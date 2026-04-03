@@ -263,40 +263,50 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
 
       {/* Modal de Confirmación de Apagado */}
       {showConfirmShutdown && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
-          <div className="bg-bg-primary rounded-xl shadow-2xl max-w-md w-full overflow-hidden p-6 animate-in fade-in zoom-in duration-200">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-orange-100 dark:bg-orange-900/30 rounded-full flex items-center justify-center mb-4">
-                <Power className="w-8 h-8 text-orange-500" />
-              </div>
-              <h3 className="text-xl font-bold text-text-primary mb-2">
-                ¿Apagar sistema?
-              </h3>
-              <p className="text-text-secondary text-sm mb-6">
-                Esto cerrará la aplicación por completo. ¿Desea continuar?
-              </p>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-bg-primary/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+          <div className="max-w-xl w-full px-6 py-12 animate-slide-up">
+            <div className="bg-bg-secondary/40 border border-border-subtle rounded-lg p-12 text-center shadow-xl relative overflow-hidden group">
+              <button
+                onClick={() => !isShuttingDown && setShowConfirmShutdown(false)}
+                className="absolute top-6 right-6 p-2 rounded-full hover:bg-bg-secondary text-text-tertiary hover:text-text-primary transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-              <div className="flex gap-3 w-full">
-                <button
-                  type="button"
-                  onClick={() => !isShuttingDown && setShowConfirmShutdown(false)}
-                  disabled={isShuttingDown}
-                  className={`flex-1 px-4 py-2.5 text-sm bg-bg-secondary border border-border-subtle text-text-secondary rounded-xl font-semibold hover:bg-bg-primary transition-colors ${isShuttingDown ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmShutdown}
-                  disabled={isShuttingDown}
-                  className={`flex-1 px-4 py-2.5 text-sm bg-orange-500 text-white rounded-xl font-semibold hover:bg-orange-600 transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg ${isShuttingDown ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {isShuttingDown ? (
-                    <><Loader2 className="w-4 h-4 animate-spin" /> Apagando...</>
-                  ) : (
-                    <><Power className="w-4 h-4" /> Sí, apagar</>
-                  )}
-                </button>
+              <div className="relative z-10 flex flex-col items-center">
+                <h2 className="text-xs font-semibold text-orange-500 uppercase tracking-[0.2em] mb-3">
+                  Confirmación de Acción
+                </h2>
+                <h1 className="text-3xl font-light tracking-tight mb-4">
+                  ¿Apagar <span className="font-semibold text-orange-500/80">sistema?</span>
+                </h1>
+
+                <p className="text-text-tertiary text-sm max-w-sm mb-8 leading-relaxed">
+                  Esto apagará la terminal local por completo. ¿Desea continuar con esta acción?
+                </p>
+
+                <div className="flex gap-4 w-full justify-center">
+                  <button
+                    type="button"
+                    onClick={() => !isShuttingDown && setShowConfirmShutdown(false)}
+                    disabled={isShuttingDown}
+                    className={`flex-1 px-8 py-3.5 bg-bg-primary border border-border-subtle hover:border-text-secondary text-text-primary rounded-lg font-semibold transition-all duration-300 shadow-sm flex items-center justify-center gap-3 active:scale-95 cursor-pointer ${isShuttingDown ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={confirmShutdown}
+                    disabled={isShuttingDown}
+                    className={`flex-1 px-8 py-3.5 bg-orange-500 text-white hover:bg-orange-600 rounded-lg font-semibold transition-all duration-300 shadow-sm shadow-orange-500/20 flex items-center justify-center gap-3 active:scale-95 cursor-pointer ${isShuttingDown ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {isShuttingDown ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Apagando...</>
+                    ) : (
+                      "Sí, apagar"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -305,35 +315,50 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
 
       {/* Modal de Confirmación de Eliminación */}
       {showConfirmDelete && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
-          <div className="bg-bg-primary rounded-xl shadow-2xl max-w-md w-full overflow-hidden p-6 animate-in fade-in zoom-in duration-200">
-            <div className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
-                <AlertCircle className="w-8 h-8 text-red-500" />
-              </div>
-              <h3 className="text-xl font-bold text-text-primary mb-2">
-                ¿Eliminar este nodo?
-              </h3>
-              <p className="text-text-secondary text-sm mb-6">
-                Esto borrará toda la configuración local y deberá volver a afiliar el equipo. Esta acción no se puede deshacer.
-              </p>
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-bg-primary/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+          <div className="max-w-xl w-full px-6 py-12 animate-slide-up">
+            <div className="bg-bg-secondary/40 border border-border-subtle rounded-lg p-12 text-center shadow-xl relative overflow-hidden group">
+              <button
+                onClick={() => !isSaving && setShowConfirmDelete(false)}
+                className="absolute top-6 right-6 p-2 rounded-full hover:bg-bg-secondary text-text-tertiary hover:text-text-primary transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
 
-              <div className="flex gap-3 w-full">
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmDelete(false)}
-                  className="flex-1 px-4 py-2.5 text-sm bg-bg-secondary border border-border-subtle text-text-secondary rounded-xl font-semibold hover:bg-bg-primary transition-colors"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  onClick={confirmResetNode}
-                  className="flex-1 px-4 py-2.5 text-sm bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-colors flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Sí, eliminar
-                </button>
+              <div className="relative z-10 flex flex-col items-center">
+                <h2 className="text-xs font-semibold text-error uppercase tracking-[0.2em] mb-3">
+                  Peligro / Irreversible
+                </h2>
+                <h1 className="text-3xl font-light tracking-tight mb-4">
+                  ¿Eliminar <span className="font-semibold text-error/80">este nodo?</span>
+                </h1>
+
+                <p className="text-text-tertiary text-sm max-w-sm mb-8 leading-relaxed">
+                  Esto borrará toda la configuración local y deberá volver a afiliar el equipo. Esta acción no se puede deshacer.
+                </p>
+
+                <div className="flex gap-4 w-full justify-center">
+                  <button
+                    type="button"
+                    onClick={() => !isSaving && setShowConfirmDelete(false)}
+                    disabled={isSaving}
+                    className="flex-1 px-8 py-3.5 bg-bg-primary border border-border-subtle hover:border-text-secondary text-text-primary rounded-lg font-semibold transition-all duration-300 shadow-sm flex items-center justify-center gap-3 active:scale-95 cursor-pointer disabled:opacity-50"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    type="button"
+                    onClick={confirmResetNode}
+                    disabled={isSaving}
+                    className="flex-1 px-8 py-3.5 bg-error text-white hover:bg-red-600 rounded-lg font-semibold transition-all duration-300 shadow-sm shadow-error/20 flex items-center justify-center gap-3 active:scale-95 cursor-pointer disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Procesando...</>
+                    ) : (
+                      "Sí, eliminar"
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

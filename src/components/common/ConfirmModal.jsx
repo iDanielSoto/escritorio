@@ -11,40 +11,40 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[10000] p-4 animate-in fade-in duration-200">
-      <div className="bg-bg-primary rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden border border-border-subtle animate-in fade-in zoom-in-95 duration-200">
-        <div className="p-6 sm:p-8">
-          {/* Header */}
-          <div className="text-center mb-6 relative">
-            <button
-              onClick={onClose}
-              className="absolute -top-2 -right-2 text-text-tertiary hover:text-text-primary hover:bg-bg-secondary rounded-md p-2 transition-all"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            <div className="w-16 h-16 mx-auto mb-4 bg-error/10 rounded-full flex items-center justify-center ring-4 ring-error/5">
-              <AlertTriangle className="w-8 h-8 text-error" strokeWidth={2.5} />
-            </div>
-            <h2 className="text-xl font-bold text-text-primary tracking-tight">{title}</h2>
-          </div>
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center bg-bg-primary/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
+      <div className="max-w-xl w-full px-6 py-12 animate-slide-up">
+        <div className="bg-bg-secondary/40 border border-border-subtle rounded-lg p-12 text-center shadow-xl relative overflow-hidden group">
+          <button
+            onClick={onClose}
+            className="absolute top-6 right-6 p-2 rounded-full hover:bg-bg-secondary text-text-tertiary hover:text-text-primary transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
-          <div className="space-y-6">
-            <p className="text-text-secondary text-sm text-center leading-relaxed font-medium">
+          <div className="relative z-10 flex flex-col items-center">
+            <h2 className="text-xs font-semibold text-error uppercase tracking-[0.2em] mb-3">
+              Confirmación Requerida
+            </h2>
+            <h1 className="text-3xl font-light tracking-tight mb-4">
+              {title}
+            </h1>
+
+            <p className="text-text-tertiary text-sm max-w-sm mb-8 leading-relaxed">
               {message}
             </p>
 
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={onConfirm}
-                className="w-full bg-[#1976D2] hover:bg-[#1565C0] text-white font-bold py-3.5 rounded-xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2"
-              >
-                Aceptar
-              </button>
+            <div className="flex gap-4 w-full justify-center">
               <button
                 onClick={onClose}
-                className="w-full text-text-tertiary font-bold text-sm hover:text-text-primary transition-colors h-10"
+                className="flex-1 px-8 py-3.5 bg-bg-primary border border-border-subtle hover:border-text-secondary text-text-primary rounded-lg font-semibold transition-all duration-300 shadow-sm flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
               >
                 Cancelar
+              </button>
+              <button
+                onClick={onConfirm}
+                className="flex-1 px-8 py-3.5 bg-error text-white hover:bg-red-600 rounded-lg font-semibold transition-all duration-300 shadow-sm shadow-error/20 flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
+              >
+                Aceptar
               </button>
             </div>
           </div>
