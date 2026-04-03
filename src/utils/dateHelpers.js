@@ -65,12 +65,3 @@ export const getDaysInMonth = (date) => {
 
   return days;
 };
-
-export const calcularDiasTotales = (fechaInicio, fechaFin) => {
-  if (!fechaInicio || !fechaFin) return 0;
-  const inicio = new Date(fechaInicio);
-  const fin = new Date(fechaFin);
-  const diferencia = fin - inicio;
-  const dias = Math.ceil(diferencia / (1000 * 60 * 60 * 24)) + 1;
-  return dias > 0 ? dias : 0;
-};

@@ -228,16 +228,3 @@ export const getSystemInfo = async () => {
   };
 };
 
-/**
- * Obtiene información adicional del hardware
- * @returns {Object} Información del hardware
- */
-export const getHardwareInfo = () => {
-  return {
-    cores: navigator.hardwareConcurrency || 'No disponible',
-    memory: navigator.deviceMemory ? `${navigator.deviceMemory} GB` : 'No disponible',
-    platform: navigator.platform || 'No disponible',
-    vendor: navigator.vendor || 'No disponible',
-    language: navigator.language || 'No disponible',
-  };
-};

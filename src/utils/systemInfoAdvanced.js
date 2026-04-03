@@ -16,7 +16,7 @@ export const isElectron = checkIsElectron;
  * Obtiene la IP pública usando ipify.org API
  * @returns {Promise<string>} IP pública
  */
-export const getPublicIP = async () => {
+const getPublicIP = async () => {
   try {
     const response = await fetch('https://api.ipify.org?format=json', {
       method: 'GET',
@@ -48,7 +48,7 @@ export const getElectronSystemInfo = getElectronInfo;
  * Obtiene la IP local usando múltiples métodos
  * @returns {Promise<string>} IP local detectada
  */
-export const getLocalIPAdvanced = async () => {
+const getLocalIPAdvanced = async () => {
   // Si estamos en Electron, usar la API nativa primero
   if (isElectron() && window.electronAPI) {
     try {
@@ -74,7 +74,7 @@ export const getLocalIPAdvanced = async () => {
  * Obtiene la MAC address real si está en Electron
  * @returns {Promise<string>} MAC address o identificador único
  */
-export const getMACAddressAdvanced = async () => {
+const getMACAddressAdvanced = async () => {
   if (isElectron() && window.electronAPI) {
     try {
       const systemInfo = await window.electronAPI.getSystemInfo();
@@ -94,7 +94,7 @@ export const getMACAddressAdvanced = async () => {
  * Obtiene información detallada del sistema operativo
  * @returns {Promise<string>} Sistema operativo con versión
  */
-export const getOperatingSystemAdvanced = async () => {
+const getOperatingSystemAdvanced = async () => {
   if (isElectron() && window.electronAPI) {
     try {
       const systemInfo = await window.electronAPI.getSystemInfo();
@@ -139,21 +139,3 @@ export const getSystemInfoAdvanced = async () => {
   };
 };
 
-/**
- * Formatea la información del sistema para mostrar
- * @param {Object} systemInfo - Información del sistema
- * @returns {Object} Información formateada
- */
-export const formatSystemInfo = (systemInfo) => {
-  return {
-    'IP Local': systemInfo.ipAddress || 'No detectada',
-    'IP Pública': systemInfo.publicIP || 'No detectada',
-    'MAC Address': systemInfo.macAddress || 'No detectada',
-    'Sistema Operativo': systemInfo.operatingSystem || 'No detectado',
-    'Plataforma': systemInfo.platform || 'No detectada',
-    'Idioma': systemInfo.language || 'No detectado',
-    'Núcleos CPU': systemInfo.cores,
-    'Memoria RAM': systemInfo.memory,
-    'Entorno': systemInfo.isElectron ? 'Electron (Desktop)' : 'Navegador Web',
-  };
-};
