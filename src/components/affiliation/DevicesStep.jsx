@@ -78,8 +78,8 @@ export default function DevicesStep({
                 {detectionStatus.type === "error" && <AlertCircle className="w-5 h-5" />}
                 {detectionStatus.type === "warning" && <AlertCircle className="w-5 h-5" />}
                 {detectionStatus.type === "info" && <Usb className="w-5 h-5" />}
-                <span className="text-sm font-medium truncate flex-1" title={detectionStatus.message}>{detectionStatus.message}</span>
-                <button onClick={() => setDetectionStatus(null)} className="ml-auto p-1.5 flex-shrink-0 hover:bg-black/5 rounded-full transition-colors">
+                <span className="text-sm font-medium">{detectionStatus.message}</span>
+                <button onClick={() => setDetectionStatus(null)} className="ml-auto p-1 hover:bg-black/5 rounded-full transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -102,15 +102,15 @@ export default function DevicesStep({
                     >
                       {/* Device Badge */}
                       <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2 min-w-0 flex-1">
-                          <div className={`p-2 rounded-lg flex-shrink-0 ${device.detected ? 'bg-success/10 text-success' : 'bg-accent/5 text-accent'}`}>
+                        <div className="flex items-center gap-2">
+                          <div className={`p-2 rounded-lg ${device.detected ? 'bg-success/10 text-success' : 'bg-accent/5 text-accent'}`}>
                              {device.type === 'facial' ? <Camera className="w-4 h-4" /> : <Usb className="w-4 h-4" />}
                           </div>
-                          <div className="min-w-0">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary block leading-none mb-1 truncate" title={device.detected ? "Detectado vía " + device.connection : "Configuración Manual"}>
+                          <div>
+                            <span className="text-[10px] font-bold uppercase tracking-widest text-text-tertiary block leading-none mb-1">
                               {device.detected ? "Detectado vía " + device.connection : "Configuración Manual"}
                             </span>
-                            <h4 className="font-semibold text-sm truncate" title={device.name || "Nuevo Dispositivo"}>{device.name || "Nuevo Dispositivo"}</h4>
+                            <h4 className="font-semibold text-sm">{device.name || "Nuevo Dispositivo"}</h4>
                           </div>
                         </div>
                         <button
@@ -129,7 +129,6 @@ export default function DevicesStep({
                             value={device.name}
                             onChange={(e) => updateDevice(device.id, "name", e.target.value)}
                             placeholder="Ej. Cámara Sur"
-                            maxLength={55}
                             className="w-full px-3 py-2 bg-bg-primary border border-border-subtle rounded-lg text-xs focus:ring-1 focus:ring-accent outline-none transition-all shadow-inner"
                           />
                         </div>
