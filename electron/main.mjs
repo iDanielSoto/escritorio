@@ -6,14 +6,6 @@
 import { app, globalShortcut, BrowserWindow } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
-import log from "electron-log/main.js";
-
-// Configuración de electron-log: Se limpia el archivo en cada arranque para no acumular peso
-log.initialize();
-log.transports.file.getFile().clear();
-
-// Sobreescribir consola principal para que sea capturada por el logger de archivo
-Object.assign(console, log.functions);
 
 // Offline-First modules
 import syncManager from "./offline/syncManager.mjs";
