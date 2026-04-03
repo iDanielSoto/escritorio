@@ -1,0 +1,324 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root.light {
+        /* Fondos - Modo Claro */
+        --bg-primary: 255 255 255;
+        /* #FFFFFF */
+        --bg-secondary: 245 245 247;
+        /* #F5F5F7 */
+        --bg-tertiary: 251 251 253;
+        /* #FBFBFD */
+
+        /* Textos - Modo Claro */
+        --text-primary: 29 29 31;
+        /* #1D1D1F */
+        --text-secondary: 110 110 115;
+        /* #6E6E73 */
+        --text-tertiary: 134 134 139;
+        /* #86868B */
+        --text-disabled: 210 210 215;
+        /* #D2D2D7 */
+
+        /* Acento/Brand */
+        --accent: 0 113 227;
+        /* #0071E3 */
+        --accent-hover: 0 119 237;
+        /* #0077ED */
+        --accent-active: 0 110 219;
+        /* #006EDB */
+        --accent-light: 232 243 255;
+        /* #E8F3FF */
+
+        /* Bordes - Modo Claro */
+        --border-subtle: 210 210 215;
+        /* #D2D2D7 */
+        --border-medium: 184 184 189;
+        /* #B8B8BD */
+        --border-divider: 229 229 231;
+        /* #E5E5E7 */
+
+        /* Estados */
+        --success: 52 199 89;
+        /* #34C759 */
+        --warning: 255 149 0;
+        /* #FF9500 */
+        --error: 255 59 48;
+        /* #FF3B30 */
+        --info: 0 122 255;
+        /* #007AFF */
+
+        /* Sombras */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+
+    :root.dark {
+        /* Fondos - Modo Oscuro (basado en Administrator) */
+        --bg-primary: 15 23 42;
+        /* #0F172A - Fondo principal oscuro azulado */
+        --bg-secondary: 30 41 59;
+        /* #1E293B - Tarjetas y elementos secundarios */
+        --bg-tertiary: 51 65 85;
+        /* #334155 - Elementos terciarios */
+
+        /* Textos - Modo Oscuro */
+        --text-primary: 248 250 252;
+        /* #F8FAFC - Texto principal muy claro */
+        --text-secondary: 203 213 225;
+        /* #CBD5E1 - Texto secundario */
+        --text-tertiary: 148 163 184;
+        /* #94A3B8 - Texto terciario */
+        --text-disabled: 100 116 139;
+        /* #64748B - Texto deshabilitado */
+
+        /* Acento/Brand - Modo Oscuro (Azul brillante de Administrator) */
+        --accent: 59 130 246;
+        /* #3B82F6 - Azul principal */
+        --accent-hover: 96 165 250;
+        /* #60A5FA - Azul hover más claro */
+        --accent-active: 37 99 235;
+        /* #2563EB - Azul activo más oscuro */
+        --accent-light: 30 58 138;
+        /* #1E3A8A - Azul oscuro para fondos */
+
+        /* Bordes - Modo Oscuro */
+        --border-subtle: 51 65 85;
+        /* #334155 - Bordes sutiles */
+        --border-medium: 71 85 105;
+        /* #475569 - Bordes medios */
+        --border-divider: 30 41 59;
+        /* #1E293B - Divisores */
+
+        /* Estados - Modo Oscuro */
+        --success: 34 197 94;
+        /* #22C55E - Verde éxito */
+        --warning: 251 146 60;
+        /* #FB923C - Naranja advertencia */
+        --error: 239 68 68;
+        /* #EF4444 - Rojo error */
+        --info: 59 130 246;
+        /* #3B82F6 - Azul info */
+
+        /* Sombras - Modo Oscuro (más intensas para contraste) */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
+        --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Aplicar modo claro por defecto si no hay clase */
+    :root {
+        /* Fondos */
+        --bg-primary: 255 255 255;
+        --bg-secondary: 245 245 247;
+        --bg-tertiary: 251 251 253;
+
+        /* Textos */
+        --text-primary: 29 29 31;
+        --text-secondary: 110 110 115;
+        --text-tertiary: 134 134 139;
+        --text-disabled: 210 210 215;
+
+        /* Acento/Brand */
+        --accent: 0 113 227;
+        --accent-hover: 0 119 237;
+        --accent-active: 0 110 219;
+        --accent-light: 232 243 255;
+
+        /* Bordes */
+        --border-subtle: 210 210 215;
+        --border-medium: 184 184 189;
+        --border-divider: 229 229 231;
+
+        /* Estados */
+        --success: 52 199 89;
+        --warning: 255 149 0;
+        --error: 255 59 48;
+        --info: 0 122 255;
+
+        /* Sombras */
+        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+        --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.12);
+    }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: rgb(var(--bg-primary));
+  color: rgb(var(--text-primary));
+  transition: background-color 0.3s ease, color 0.3s ease;
+  
+  /* Prevent text selection */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Scrollbar personalizado - Más discreto */
+/* Para navegadores Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--border-subtle) / 0.5);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--border-medium) / 0.7);
+}
+
+/* Para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--border-subtle) / 0.5) transparent;
+}
+
+/* Animación de borde con gradiente giratorio */
+@keyframes rotate-gradient {
+  0% {
+    --angle: 0deg;
+  }
+  100% {
+    --angle: 360deg;
+  }
+}
+
+@property --angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.animated-border {
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradiente para modo claro - tonos suaves */
+:root.light .animated-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1rem;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    #E0E7FF,
+    #C7D2FE,
+    #A5B4FC,
+    #818CF8,
+    #6366F1,
+    #818CF8,
+    #A5B4FC,
+    #C7D2FE,
+    #E0E7FF
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: rotate-gradient 4s linear infinite;
+  pointer-events: none;
+}
+
+/* Gradiente para modo oscuro - tonos oscuros */
+:root.dark .animated-border::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1rem;
+  padding: 2px;
+  background: conic-gradient(
+    from var(--angle, 0deg),
+    #CBD5E1,
+    #94A3B8,
+    #64748B,
+    #475569,
+    #334155,
+    #1E293B,
+    #0F172A,
+    #1E293B,
+    #334155,
+    #475569,
+    #64748B,
+    #94A3B8,
+    #CBD5E1
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: rotate-gradient 4s linear infinite;
+  pointer-events: none;
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-bottom {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-in-bottom 0.8s ease-out forwards;
+}
+
+@keyframes zoom-in {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.animate-zoom-in {
+  animation: zoom-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-backdrop {
+  animation: fade-in 0.3s ease-out forwards;
+}

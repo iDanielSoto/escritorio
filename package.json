@@ -1,0 +1,105 @@
+{
+  "name": "sistema-asistencia",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sistema de Asistencia Kiosko - FASITLAC",
+  "author": "FASITLAC",
+  "type": "module",
+  "main": "electron/main.mjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron": "cross-env NODE_ENV=development electron .",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://127.0.0.1:5174 && cross-env NODE_ENV=development electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "rebuild": "npx electron-rebuild -f -w better-sqlite3"
+  },
+  "dependencies": {
+    "@vladmandic/face-api": "^1.7.15",
+    "better-sqlite3": "^12.6.2",
+    "canvas": "^3.2.0",
+    "face-api.js": "^0.22.2",
+    "lucide-react": "^0.263.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "uuid": "^13.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.0.3",
+    "autoprefixer": "^10.4.14",
+    "baseline-browser-mapping": "^2.9.13",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.5",
+    "electron-builder": "^26.7.0",
+    "postcss": "^8.4.27",
+    "tailwindcss": "^3.3.3",
+    "vite": "^4.4.5",
+    "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.fasitlac.checador",
+    "productName": "Sistema de Asistencia",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "!electron/BiometricMiddleware/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "electron/BiometricMiddleware/bin/",
+        "to": "BiometricMiddleware",
+        "filter": [
+          "**/*.exe",
+          "**/*.dll",
+          "**/*.config"
+        ]
+      },
+      {
+        "from": "electron/BiometricMiddleware/installers/",
+        "to": "installers"
+      }
+    ],
+    "win": {
+      "requestedExecutionLevel": "requireAdministrator",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "public/logo.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Sistema de Asistencia",
+      "deleteAppDataOnUninstall": true,
+      "license": "public/license.txt"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "icon": "public/logo.png"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "public/icon.icns"
+    }
+  }
+}

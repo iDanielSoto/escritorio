@@ -1,0 +1,62 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {
+      "version": "2.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
+        "projectName": "BiometricMiddleware",
+        "projectPath": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
+        "packagesPath": "C:\\Users\\lis_a\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\lis_a\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net48"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net48": {
+            "targetAlias": "net48",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net48": {
+          "targetAlias": "net48",
+          "dependencies": {
+            "Microsoft.NETFramework.ReferenceAssemblies": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[1.0.3, )",
+              "autoReferenced": true
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win7-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}

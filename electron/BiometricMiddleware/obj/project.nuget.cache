@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "IjHUiUw8VQpTK70ICtUe5J5s/n89lynLzPHpVdvh+RGmS9nJIWd8Wgkha199uIbqUCWXY27I8uB3TMPpYJ4bdw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\lis_a\\.nuget\\packages\\microsoft.netframework.referenceassemblies\\1.0.3\\microsoft.netframework.referenceassemblies.1.0.3.nupkg.sha512",
+    "C:\\Users\\lis_a\\.nuget\\packages\\microsoft.netframework.referenceassemblies.net48\\1.0.3\\microsoft.netframework.referenceassemblies.net48.1.0.3.nupkg.sha512",
+    "C:\\Users\\lis_a\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

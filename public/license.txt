@@ -1,0 +1,46 @@
+﻿Los presentes Terminos y Condiciones regulan el acceso y uso del software de control de asistencia (en adelante, "el Sistema"), desarrollado bajo una arquitectura de escritorio nativa con Electron. Al utilizar el Sistema, el Usuario y la Entidad contratante aceptan cumplir con las siguientes clausulas:
+
+1. OBJETO Y ALCANCE DEL SISTEMA
+El Sistema es una herramienta integral diseñada para la gestion de jornada laboral. Utiliza una interfaz basada en un dashboard minimalista y logotipos oficiales para facilitar la interaccion del usuario. El software permite el registro de asistencia mediante metodos hibridos de biometria: reconocimiento facial y lectura de huella dactilar.
+
+2. REGISTRO Y VALIDACION POR HUELLA DIGITAL
+Para fortalecer la seguridad y ofrecer alternativas de registro, el Sistema incorpora la tecnologia de lectura de huella dactilar:
+
+Enrolamiento: El Usuario debera realizar un registro previo de su huella digital bajo la supervision del administrador. Este proceso vincula de forma unica el patron dactilar con el numero de empleado en la base de datos (PostgreSQL/MySQL).
+
+Verificacion: Al momento de la toma de asistencia, el Sistema comparara la huella colocada en el lector periferico con el registro almacenado. El exito del registro dependera de la integridad del sensor y la correcta posicion del dedo.
+
+Privacidad Dactilar: El Sistema no almacena una imagen real de la huella, sino un vector numerico o "template" cifrado que es irreversible y se utiliza exclusivamente para fines de autenticacion laboral.
+
+3. RECONOCIMIENTO FACIAL Y SELFIE DE CONTROL
+Complementariamente al uso de huella, el Sistema mantiene su modulo de vision artificial:
+
+Face-api.js: Se utiliza para el procesamiento de imagenes en tiempo real.
+
+Selfie con Marca de Tiempo: Independientemente del metodo biometrico usado (huella o rostro), el Sistema puede capturar una fotografia con timestamp para auditar la veracidad del registro y asegurar que el empleado se encuentra fisicamente en el lugar de trabajo.
+
+4. CONFIGURACION JERARQUICA DE TERMINALES (NODOS)
+La administracion de los dispositivos se rige por la siguiente jerarquia de configuracion:
+
+Node Name (Nombre de Nodo): Este es el parametro general y prioritario de la terminal. Debe configurarse en la parte superior del formulario, situandose fuera y antes de las secciones especificas de configuracion de camara o huella dactilar.
+
+Independencia de Dispositivos: El "Node Name" identifica la localizacion logica del punto de control, permitiendo que un mismo nodo gestione tanto el sensor de huellas como la camara de manera centralizada.
+
+5. RESPONSABILIDADES DEL USUARIO Y LA ENTIDAD
+Mantenimiento: La Entidad es responsable de mantener los lectores de huella limpios y calibrados para evitar errores de lectura.
+
+Uso Personal: El registro por huella es estrictamente personal. Cualquier intento de utilizar moldes o suplantar la identidad dactilar sera considerado una falta grave segun el reglamento interno.
+
+Actitud: Se exhorta a los usuarios a ser "Patient with people" (pacientes con las personas) durante el proceso de enrolamiento dactilar, el cual puede requerir varios intentos para una captura optima.
+
+6. PROPIEDAD INTELECTUAL Y TECNICA
+El ecosistema de software, incluyendo los scripts de Python para integracion de hardware y la interfaz en React, es propiedad exclusiva del desarrollador. No se permite la alteracion de los drivers del lector de huellas ni del codigo fuente del Sistema.
+
+7. LIMITACION DE RESPONSABILIDAD
+El desarrollador no se hace responsable por registros fallidos debido a:
+
+Desgaste fisico de las huellas dactilares del usuario que impida su lectura (cicatrices, suciedad o condiciones medicas).
+
+Fallos de comunicacion entre el lector biometrico y la aplicacion de Electron.
+
+Configuracion incorrecta del "Node Name" por parte del administrador.

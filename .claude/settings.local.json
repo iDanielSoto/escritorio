@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ren:*)",
+      "Bash(dotnet build:*)",
+      "Bash(powershell:*)",
+      "Bash(start \"\" \"C:\\\\Users\\\\paulx\\\\Documents\\\\GitHub\\\\checador\\\\Desktop\\\\electron\\\\BiometricMiddleware\\\\bin\\\\Release\\\\net48\\\\BiometricMiddleware.exe\")",
+      "Bash(dir /s /b \"c:\\\\Users\\\\paulx\\\\Documents\\\\GitHub\\\\checador\\\\Desktop\\\\electron\\\\BiometricMiddleware\\\\*.exe\")",
+      "Bash(dir:*)",
+      "Bash(cmd /c copy:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run build:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
