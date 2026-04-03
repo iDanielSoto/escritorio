@@ -2,6 +2,7 @@
 // Servicio para gestionar solicitudes de afiliación de escritorio
 
 import { getApiEndpoint } from "../config/apiEndPoint";
+import { getSystemInfo } from "../utils/systemInfo";
 
 const API_URL = getApiEndpoint("/api");
 
@@ -196,24 +197,12 @@ export const cancelarSolicitud = async (solicitudId) => {
  */
 export const obtenerInfoSistema = async () => {
   try {
-    // Si estamos en Electron, usar la API
-    if (window.electronAPI) {
-      const systemInfo = await window.electronAPI.getSystemInfo();
-      const networkInfo = await window.electronAPI.getNetworkInfo();
-
-      return {
-        sistema_operativo: `${systemInfo.platform} ${systemInfo.arch}`,
-        mac: networkInfo.mac || "00:00:00:00:00:00",
-        ip: networkInfo.ip || "127.0.0.1",
-      };
-    } else {
-      // Si es web, usar valores por defecto
-      return {
-        sistema_operativo: navigator.platform || "Unknown",
-        mac: "00:00:00:00:00:00",
-        ip: "127.0.0.1",
-      };
-    }
+    const info = await getSystemInfo();
+    return {
+      sistema_operativo: info.operatingSystem || "Unknown",
+      mac: info.macAddress || "00:00:00:00:00:00",
+      ip: info.ipAddress || "127.0.0.1",
+    };
   } catch (error) {
     console.error("❌ Error al obtener info del sistema:", error);
     return {
