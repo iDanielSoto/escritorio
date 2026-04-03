@@ -21,7 +21,6 @@ import {
   getDaysInMonth,
   formatDateKey,
 } from "../utils/dateHelpers";
-import { registrosPorDia } from "../constants/notices";
 import { getAvisosDeEmpleado } from "../services/avisosService";
 import HistorialModal from "../components/session/HistorialModal";
 import ConfigModal from "../components/session/ConfigModal";
