@@ -533,4 +533,10 @@ export function registerIpcHandlers() {
     ipcMain.handle("raw-sync-push-now", async () => rawSyncService.pushPendingRawPunches());
     ipcMain.handle("raw-offline-pending-count", async () => rawQueueManager.getPendingRawCount());
 
+    // ==========================================
+    // Logger Handler
+    // ==========================================
+    ipcMain.on("log-error", (event, errorInfo) => {
+        console.error(`[Frontend Error]`, errorInfo);
+    });
 }
