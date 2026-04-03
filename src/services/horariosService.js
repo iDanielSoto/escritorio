@@ -16,8 +16,9 @@ export const getHorarioPorEmpleado = async (empleadoId, token = null) => {
             'Content-Type': 'application/json'
         };
 
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
+        const currentToken = token || localStorage.getItem("auth_token");
+        if (currentToken) {
+            headers['Authorization'] = `Bearer ${currentToken}`;
         }
 
         const response = await fetch(url, {

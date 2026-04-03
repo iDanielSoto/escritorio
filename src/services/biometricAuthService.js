@@ -16,11 +16,13 @@ export const identificarPorHuella = async (templateBase64) => {
   try {
     console.log("🔍 Iniciando identificación biométrica...");
 
+    const token = localStorage.getItem("auth_token");
     // Llamar al endpoint de identificación 1:N
     const response = await fetch(`${API_URL}/biometric/identify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify({
         template_base64: templateBase64,
@@ -44,7 +46,12 @@ export const identificarPorHuella = async (templateBase64) => {
 
     // Obtener datos completos del empleado
     const empleadoResponse = await fetch(
-      `${API_URL}/empleados/${result.id_empleado}`
+      `${API_URL}/empleados/${result.id_empleado}`,
+      {
+        headers: {
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+      }
     );
 
     if (!empleadoResponse.ok) {
@@ -86,10 +93,12 @@ export const verificarHuellaEmpleado = async (idEmpleado, templateBase64) => {
   try {
     console.log(`🔐 Verificando huella del empleado ${idEmpleado}...`);
 
+    const token = localStorage.getItem("auth_token");
     const response = await fetch(`${API_URL}/biometric/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` }),
       },
       body: JSON.stringify({
         id_empleado: idEmpleado,
@@ -112,7 +121,11 @@ export const verificarHuellaEmpleado = async (idEmpleado, templateBase64) => {
     }
 
     // Obtener datos del empleado
-    const empleadoResponse = await fetch(`${API_URL}/empleados/${idEmpleado}`);
+    const empleadoResponse = await fetch(`${API_URL}/empleados/${idEmpleado}`, {
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` }),
+      },
+    });
 
     if (!empleadoResponse.ok) {
       throw new Error("Error al obtener datos del empleado");

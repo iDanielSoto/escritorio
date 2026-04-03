@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {}
+    "C:\\Users\\paulx\\Documents\\GitHub\\escritorio\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {}
   },
   "projects": {
-    "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {
+    "C:\\Users\\paulx\\Documents\\GitHub\\escritorio\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj": {
       "version": "2.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
+        "projectUniqueName": "C:\\Users\\paulx\\Documents\\GitHub\\escritorio\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
         "projectName": "BiometricMiddleware",
-        "projectPath": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
-        "packagesPath": "C:\\Users\\lis_a\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\lis_a\\OneDrive\\Escritorio\\proyecto completo\\checador\\Desktop\\electron\\BiometricMiddleware\\obj\\",
+        "projectPath": "C:\\Users\\paulx\\Documents\\GitHub\\escritorio\\electron\\BiometricMiddleware\\BiometricMiddleware.csproj",
+        "packagesPath": "C:\\Users\\paulx\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\paulx\\Documents\\GitHub\\escritorio\\electron\\BiometricMiddleware\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\lis_a\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\paulx\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net48"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -49,7 +54,7 @@
               "version": "[13.0.3, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {

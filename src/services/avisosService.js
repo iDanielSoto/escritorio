@@ -88,7 +88,7 @@ export async function getAvisosGlobales(forceRefresh = false) {
       url += `?empresa_id=${encodeURIComponent(empresaId)}`;
     }
 
-    const response = await fetchApi(url, { skipAuth: true });
+    const response = await fetchApi(url);
 
     const avisos = response.success && Array.isArray(response.data)
       ? response.data.map(mapearAviso)
