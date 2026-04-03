@@ -148,8 +148,15 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
   }, [onLogout]);
 
   useEffect(() => {
+    // Suspendemos por completo el contador si estamos en medio de un proceso biométrico
+    if (showBiometricReader || showRegisterFace) {
+      return;
+    }
+
     const INACTIVITY_TIMEOUT = 15;
     let lastActivityTime = Date.now();
+    // Restablecer el tiempo visible cuando se (re)inicia el contador
+    setTimeLeft(INACTIVITY_TIMEOUT);
 
     const updateActivity = () => {
       lastActivityTime = Date.now();
@@ -180,7 +187,7 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
       clearInterval(verifyInactivity);
       activityEvents.forEach(event => window.removeEventListener(event, updateActivity));
     };
-  }, []); // Sin dependencias para que no se reinicie en cada render
+  }, [showBiometricReader, showRegisterFace]); // Se detiene o reinicia el timer según el estado de los modales biométricos
 
   const handleGuardarConfigNodo = () => {
     console.log({
