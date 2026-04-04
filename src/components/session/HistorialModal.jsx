@@ -6,7 +6,7 @@ import DynamicLoader from "../common/DynamicLoader";
 
 export default function HistorialModal({ onClose, usuario }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date()); // Default to today to show "by day" immediately
   const [asistencias, setAsistencias] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -143,12 +143,13 @@ export default function HistorialModal({ onClose, usuario }) {
   const seleccionarDia = (dia) => {
     if (!dia) return;
     const fecha = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), dia);
+    if (fecha > hoy) return; // No se puede seleccionar el futuro
     setSelectedDate(selectedDate?.toDateString() === fecha.toDateString() ? null : fecha);
   };
 
   const registrosFiltrados = selectedDate
     ? asistencias.filter(r => new Date(r.fecha_registro).toDateString() === selectedDate.toDateString())
-    : asistencias;
+    : []; // No longer showing all as "recent activity"
 
   const formatearFecha = (fechaStr) => {
     const fecha = new Date(fechaStr);
@@ -236,11 +237,12 @@ export default function HistorialModal({ onClose, usuario }) {
                     <button
                       key={i}
                       onClick={() => seleccionarDia(dia)}
-                      disabled={!dia}
+                      disabled={!dia || (new Date(currentMonth.getFullYear(), currentMonth.getMonth(), dia) > hoy)}
                       className={`relative aspect-square rounded-lg text-xs font-bold flex items-center justify-center transition-all
                         ${!dia ? 'bg-transparent' : 'hover:bg-slate-50 dark:hover:bg-slate-800'}
                         ${isSelected ? 'bg-[#1976D2] dark:bg-slate-200 text-white dark:text-slate-900 shadow-lg' : 'text-slate-500 dark:text-slate-400'}
                         ${isToday && !isSelected ? 'border-2 border-[#1976D2] dark:border-slate-200' : ''}
+                        ${dia && new Date(currentMonth.getFullYear(), currentMonth.getMonth(), dia) > hoy ? 'opacity-20 cursor-not-allowed' : ''}
                       `}
                     >
                       {dia}
@@ -261,7 +263,7 @@ export default function HistorialModal({ onClose, usuario }) {
             <div className="flex-1 flex flex-col min-h-0 bg-slate-50/50 dark:bg-slate-800/50">
               <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm sticky top-0 z-10 flex justify-between items-center">
                 <h4 className="font-bold text-slate-800 dark:text-slate-200 text-[11px] uppercase tracking-widest">
-                  {selectedDate ? `REGISTROS DEL DÍA ${selectedDate.getDate()}` : 'Actividad reciente'}
+                  {selectedDate ? `REGISTROS DEL DÍA ${selectedDate.getDate()}` : 'Seleccione un día'}
                 </h4>
                 <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded uppercase">
                   {registrosFiltrados.length} Registros
@@ -270,9 +272,11 @@ export default function HistorialModal({ onClose, usuario }) {
 
               <div className="flex-1 overflow-y-auto p-5 space-y-2">
                 {registrosFiltrados.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 py-10">
+                  <div className="h-full flex flex-col items-center justify-center text-slate-300 dark:text-slate-600 py-10 text-center">
                     <Clock className="w-10 h-10 mb-2 opacity-10" />
-                    <p className="text-[10px] font-bold uppercase tracking-widest">Sin actividad</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest">
+                      {selectedDate ? 'Sin actividad en este día' : 'Selecciona un día en el calendario'}
+                    </p>
                   </div>
                 ) : (
                   registrosFiltrados.map((registro, idx) => {
