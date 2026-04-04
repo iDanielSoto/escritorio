@@ -565,25 +565,6 @@ export async function cargarDatosOffline(empleadoId) {
  * }>}
  */
 export async function guardarYSincronizarAsistencia({ empleadoId, metodoRegistro, isDatabaseConnected }) {
-  // === NUEVA VALIDACIÓN OFFLINE ===
-  // Prevenir generación de colas innecesarias si el empleado no tiene horario hoy.
-  const offlineSystemAvailable = !isDatabaseConnected && window.electronAPI && window.electronAPI.offlineDB;
-  if (offlineSystemAvailable) {
-    try {
-      const datosOffline = await cargarDatosOffline(empleadoId);
-      if (!datosOffline.horario || !datosOffline.horario.trabaja) {
-        console.warn(`[EagerSync] ⛔ Empleado ${empleadoId} intentó registrar offline pero no trabaja hoy.`);
-        return {
-          rechazado: true,
-          errorServidor: "No tienes un horario asignado para el día de hoy. No se registrará la asistencia.",
-          pendiente: false
-        };
-      }
-    } catch (err) {
-      console.error('[EagerSync] Error validando horario offline antes de guardar:', err);
-      // Fallback: Si hay error validando, permitimos el guardado y que el servidor/sincronizador decida después
-    }
-  }
 
   // 1. Guardar siempre en la cola local (offline-first garantizado)
   let localResult = null;
