@@ -217,12 +217,16 @@ export const verificarEstadoPublico = async (escritorioId) => {
     }
 
     const url = getApiEndpoint(`${ESCRITORIO_ENDPOINT}/public/status/${escritorioId}`);
+    const token = getAuthToken();
+
+    const headers = { "Content-Type": "application/json" };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
 
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
     });
 
     if (response.ok) {
