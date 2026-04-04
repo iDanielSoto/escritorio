@@ -57,12 +57,12 @@ app.whenReady().then(() => {
     });
   }
 
-  // Comando secreto para cerrar la APP: Ctrl + Shift + Q
-  globalShortcut.register('CommandOrControl+Shift+Q', () => {
-    app.quit();
-  });
+  // NOTA DE SEGURIDAD: El atajo Ctrl+Shift+Q para cerrar la app fue eliminado
+  // porque permitía a cualquier persona con acceso al teclado cerrar el kiosco sin autenticación.
+  // Si se requiere cierre por mantenimiento, implementar un modal con PIN de administrador
+  // en el renderer que llame a ipcRenderer.send('quit-app') solo tras validar el PIN.
 
-  // Comando secreto para minimizar (útil para mantenimiento): Ctrl + Shift + M
+  // Comando para minimizar (útil para mantenimiento): Ctrl + Shift + M
   globalShortcut.register('CommandOrControl+Shift+M', () => {
     windowManager.minimizeWindow();
   });
