@@ -216,7 +216,7 @@ export const verificarEstadoPublico = async (escritorioId) => {
       throw new Error("No se proporcionó el ID del escritorio");
     }
 
-    const url = getApiEndpoint(`${ESCRITORIO_ENDPOINT}/public/status/${escritorioId}`);
+    const url = getApiEndpoint(`${ESCRITORIO_ENDPOINT}/status/${escritorioId}`);
     const token = getAuthToken();
 
     const headers = { "Content-Type": "application/json" };
@@ -233,7 +233,9 @@ export const verificarEstadoPublico = async (escritorioId) => {
       const resultado = await response.json();
       return resultado;
     }
-    return null;
+    
+    // Si da 404 u otro error, devolvemos el estado para que el hook reaccione
+    return { success: false, status: response.status };
   } catch (error) {
     console.warn("❌ Error al verificar estado público del escritorio:", error);
     return null;

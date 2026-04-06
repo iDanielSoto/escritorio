@@ -36,6 +36,7 @@ export const useNodeStatus = () => {
             } else {
                 // Polling en tiempo real (ligero)
                 const res = await verificarEstadoPublico(escritorioId);
+                
                 if (res && res.success && res.data) {
                     const publicStatus = res.data;
                     
@@ -44,6 +45,11 @@ export const useNodeStatus = () => {
                     
                     const disabled = publicStatus.es_activo === false || publicStatus.es_activo === 0;
                     setIsNodeDisabled(disabled);
+                } else if (res && (res.status === 404 || res.success === false)) {
+                    // Si el servidor dice que no existe (404) o la respuesta no es exitosa, 
+                    // asumimos que el nodo ha sido deshabilitado/eliminado
+                    console.warn("⚠️ Nodo no encontrado o deshabilitado en el servidor");
+                    setIsNodeDisabled(true);
                 }
             }
         } catch (error) {
