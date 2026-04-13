@@ -67,7 +67,8 @@ export default function DevicesStep({
             </div>
 
             {/* Status Alert Area inside static header */}
-            {detectionStatus && (
+            {detectionStatus && !(detectionStatus.type === "success" && devices.length === 0) && (
+
               <div className={`mt-6 p-4 rounded-lg flex items-center gap-3 border shadow-sm animate-fade-in ${detectionStatus.type === "success" ? "bg-success/5 border-success/20 text-success" :
                   detectionStatus.type === "error" ? "bg-error/5 border-error/20 text-error" :
                     detectionStatus.type === "warning" ? "bg-warning/5 border-warning/20 text-warning" :

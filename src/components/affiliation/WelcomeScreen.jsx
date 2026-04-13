@@ -68,30 +68,8 @@ export default function WelcomeScreen({ onClose }) {
 
   return (
     <div className="h-screen w-screen bg-bg-primary text-text-primary flex flex-col font-sans selection:bg-accent/30 overflow-hidden">
-      {/* Top Bar - Status & Health */}
-      <div className="px-6 py-3 border-b border-border-subtle flex items-center justify-between text-[11px] font-medium text-text-secondary bg-bg-secondary/30">
-        <div className="flex items-center gap-6">
-          <div className="flex items-center gap-1.5 grayscale opacity-70">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>{systemInfo.hostname}</span>
-          </div>
-          <div className="flex items-center gap-1.5" title="Dirección IP Local">
-            <Wifi className="w-3.5 h-3.5 text-success" />
-            <span>{systemInfo.ip}</span>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-success"></span>
-            <span>Base de Datos</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className={`w-1.5 h-1.5 rounded-full ${sdkMissing ? 'bg-error' : 'bg-success'}`}></span>
-            <span>Servicio Biométrico</span>
-          </div>
-        </div>
-      </div>
+      {/* Top Bar - Decorative */}
+      <div className="px-6 py-3 border-b border-border-subtle bg-bg-secondary/30" />
 
       <div className="flex-1 flex flex-col items-center justify-center p-6 max-w-5xl mx-auto w-full">
         {/* Header Section */}

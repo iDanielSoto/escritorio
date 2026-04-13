@@ -65,8 +65,16 @@ export default function AffiliationStep({
                       value={companyId}
                       onChange={(e) => setCompanyId(e.target.value)}
                       placeholder="nombre-empresa-XXX"
+                      maxLength={20}
                       className="w-full px-4 py-3 bg-bg-primary border border-border-subtle rounded-lg focus:ring-1 focus:ring-accent focus:border-accent transition-all outline-none text-center font-mono text-sm tracking-[0.15em] shadow-inner placeholder:text-text-disabled"
                     />
+                    <span className={`absolute right-3 bottom-2.5 text-[10px] font-mono tabular-nums transition-colors ${
+                      companyId.length === 20 ? "text-error" :
+                      companyId.length >= 16 ? "text-warning" :
+                      "text-text-disabled"
+                    }`}>
+                      {companyId.length}/20
+                    </span>
                   </div>
 
                   <div className="pt-4">
