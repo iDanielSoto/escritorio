@@ -10,6 +10,7 @@ import { fileURLToPath } from "url";
 // Offline-First modules
 import syncManager from "./offline/syncManager.mjs";
 import rawSyncService from "./offline/rawSyncService.mjs";
+import * as remoteCommandService from "./services/remoteCommandService.mjs";
 
 // Services & Managers
 import * as biometricService from "./services/biometricService.mjs";
@@ -22,14 +23,29 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ==========================================
-// INICIALIZACIÓN
+// BLOQUEO DE INSTANCIA ÚNICA (PREVENIR PROCESOS FANTASMA)
 // ==========================================
+const gotTheLock = app.requestSingleInstanceLock();
 
-// Suprimir logs de errores internos de Chromium
-app.commandLine.appendSwitch("log-level", "3");
+if (!gotTheLock) {
+    console.log('[Main] Ya hay una instancia de la aplicación ejecutándose. Cerrando duplicado...');
+    app.quit();
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Si alguien intenta lanzar una segunda instancia, enfocamos la actual
+        const mainWindow = windowManager.getMainWindow();
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.focus();
+        }
+    });
 
-// Este método se llamará cuando Electron haya terminado la inicialización
-app.whenReady().then(() => {
+    // Suprimir logs de errores internos de Chromium
+    app.commandLine.appendSwitch("log-level", "3");
+
+    // Este método se llamará cuando Electron haya terminado la inicialización
+    app.whenReady().then(() => {
+        // ... el resto de app.whenReady se mantiene igual ...
 
   const ALLOW_DEV_TOOLS = windowManager.ALLOW_DEV_TOOLS;
   const isProd = process.env.NODE_ENV !== "development";
@@ -116,6 +132,9 @@ app.whenReady().then(() => {
     rawSyncService.configureSync(apiBaseUrl, '');
     rawSyncService.startAutoSync(30000); // 30 segundos
 
+    // Iniciar el polling de control remoto del admin
+    remoteCommandService.startRemoteCommandPoll(30000);
+
     console.log('[Main] Status: Sistema Offline-First inicializado');
   } catch (error) {
     console.error('[Main] Error: Error inicializando sistema offline:', error);
@@ -143,4 +162,7 @@ app.on("will-quit", () => {
   networkService.stopMonitoring();
   syncManager.destroy();
   rawSyncService.stopAutoSync();
+  remoteCommandService.stopRemoteCommandPoll();
 });
+} // Fin del else de Single Instance Lock
+

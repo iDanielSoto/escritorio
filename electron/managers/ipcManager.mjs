@@ -517,6 +517,25 @@ export function registerIpcHandlers() {
     ipcMain.handle("sync-update-token", async (event, token) => {
         syncManager.updateAuthToken(token);
         rawSyncService.updateSyncToken(token);
+        
+        // Registrar el token persistente en app-config.json
+        if (token) {
+            try {
+                const configPath = configHelper.getConfigPath();
+                let configData = {};
+                // Import fs si no está u operar con él si lo está en este archivo
+                // ipcManager ya debe importar fs
+                if (fs.existsSync(configPath)) {
+                    configData = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+                }
+                configData.auth_token = token;
+                fs.writeFileSync(configPath, JSON.stringify(configData, null, 2), 'utf8');
+                console.log('[IPC] Token persistido a disco exitosamente para uso del Watchdog.');
+            } catch (err) {
+                console.warn('[IPC] No se pudo persistir el token al disco:', err.message);
+            }
+        }
+        
         return { success: true };
     });
 
