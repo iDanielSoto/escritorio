@@ -5,6 +5,44 @@ let pollInterval = null;
 let isChecking = false;
 
 /**
+ * Desconecta de la base de datos de manera segura todo lector atado al nodo actual antes de morir.
+ */
+async function disconnectAllBiometrics(backendUrl, token) {
+    try {
+        console.log("[RemoteCommand] 🔌 Desconectando biométricos en BD antes de apagar...");
+        const res = await fetch(`${backendUrl}/api/biometrico?es_activo=true`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json'
+            }
+        });
+        
+        if (!res.ok) throw new Error("Fallo al obtener biometricos activos");
+        const json = await res.json();
+        
+        if (json.success && json.data && json.data.length > 0) {
+            const promises = json.data.map(device => 
+                fetch(`${backendUrl}/api/biometrico/${device.id}/estado`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`, 
+                        'Content-Type': 'application/json' 
+                    },
+                    body: JSON.stringify({ estado: 'desconectado' })
+                })
+            );
+            await Promise.all(promises);
+            console.log(`[RemoteCommand] ✅ ${json.data.length} biométricos desconectados con éxito en la BD.`);
+        } else {
+            console.log("[RemoteCommand] No hay dispositivos activos para desconectar.");
+        }
+    } catch (e) {
+        console.error("[RemoteCommand] Excepcion desconectando biometricos:", e.message);
+    }
+}
+
+/**
  * Consulta el backend para verificar si hay un comando pendiente para Kiosko
  * Endpoint: GET /api/escritorio/:id/comando-kiosko
  */
@@ -63,6 +101,7 @@ async function checkRemoteCommand() {
                 switch (data.accion) {
                     case "shutdown":
                         console.log("[RemoteCommand] !!! EJECUTANDO CIERRE FORZADO !!!");
+                        await disconnectAllBiometrics(backendUrl, token);
                         app.exit(0);
                         // Fallback total en caso de que app.exit sea bloqueado
                         setTimeout(() => {
@@ -72,6 +111,7 @@ async function checkRemoteCommand() {
                         break;
                     case "restart":
                         console.log("[RemoteCommand] !!! EJECUTANDO REINICIO FORZADO !!!");
+                        await disconnectAllBiometrics(backendUrl, token);
                         app.relaunch();
                         app.exit(0);
                         setTimeout(() => process.exit(0), 500);
