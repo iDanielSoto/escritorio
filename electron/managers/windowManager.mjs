@@ -75,10 +75,24 @@ export function createWindow() {
         });
     }
 
-    // Mostrar cuando esté listo para evitar flash
+    // Mostrar cuando esté listo para evitar flash y ganar foco agresivamente
     mainWindow.once("ready-to-show", () => {
         mainWindow.maximize();
         mainWindow.show();
+        
+        // --- FUERZA DE FOCO (Bypass OS Focus Prevention) ---
+        // Elevar temporalmente o permanentemente el grado de la ventana
+        mainWindow.setAlwaysOnTop(true, "screen-saver");
+        mainWindow.focus();
+        
+        // Si estamos en entorno de desarrollo normal, quitar el onTop luego de ganar el foco
+        if (!FORCE_KIOSK) {
+            setTimeout(() => {
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.setAlwaysOnTop(false);
+                }
+            }, 2000);
+        }
     });
 
     // Log de errores de carga

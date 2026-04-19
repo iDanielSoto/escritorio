@@ -11,6 +11,8 @@ $configPath = Join-Path $configDir "app-config.json"
 $pollIntervalOk = 10
 $pollIntervalErr = 30
 
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 function Write-Log {
     param([string]$Message)
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -43,11 +45,12 @@ function Get-KioskoExePath {
 }
 
 function Test-KioskoRunning {
-    $proc = Get-Process -Name "Sistema de Asistencia" -ErrorAction SilentlyContinue
-    if ($proc) { return $true }
-    # Podría llamarse también con el nombre exacto sin espacios dependiendo de cómo se genera, pero busquemos ambos
-    $proc2 = Get-Process -Name "SistemaAsistencia" -ErrorAction SilentlyContinue
-    if ($proc2) { return $true }
+    $procs = Get-Process -Name "Sistema de Asistencia", "SistemaAsistencia" -ErrorAction SilentlyContinue
+    foreach ($p in $procs) {
+        if ($p.MainWindowHandle -ne 0) {
+            return $true
+        }
+    }
     return $false
 }
 
@@ -67,8 +70,13 @@ while ($true) {
         $escritorioId = $config.escritorio_id
         $backendUrl   = $config.backendUrl
         $token        = $config.auth_token
+        
+        if (-not $backendUrl) {
+            $backendUrl = "https://9dm7dqf9-3002.usw3.devtunnels.ms"
+        }
 
-        if (-not $escritorioId -or -not $backendUrl) {
+        if (-not $escritorioId) {
+            Write-Log "FALTA CONFIGURACION: escritorioId=$escritorioId"
             Start-Sleep -Seconds $pollIntervalOk
             continue
         }
@@ -76,29 +84,39 @@ while ($true) {
         $backendUrl = $backendUrl.TrimEnd('/')
         $url = "$backendUrl/api/escritorio/$escritorioId/comando-watchdog"
         $headers = @{}
+        $headers["Accept"] = "application/json"
+        
         if ($token) { $headers["Authorization"] = "Bearer $token" }
+
+        Write-Log "Pidiendo comando a: $url"
 
         $response = $null
         try {
             $response = Invoke-RestMethod -Uri $url -Headers $headers -TimeoutSec 8 -Method Get -ErrorAction Stop
         } catch {
+            Write-Log "ERROR API o de Red: $($_.Exception.Message)"
             Start-Sleep -Seconds $pollIntervalErr
             continue
         }
 
+        Write-Log "RESPUESTA API: success=$($response.success), accion=$($response.accion)"
+
         if ($response.success -eq $true -and $response.accion -eq 'start') {
             if (-not (Test-KioskoRunning)) {
+                Write-Log "Limpiando procesos fantasma de Electron previos a reencendido..."
+                Get-Process -Name "Sistema de Asistencia", "SistemaAsistencia" -ErrorAction SilentlyContinue | Stop-Process -Force
+                
                 $exePath = Get-KioskoExePath
                 Write-Log "DEBUG: Ruta detectada del ejecutable: $exePath"
                 if ($exePath) {
-                    Write-Log "ACCION: Comando 'start' recibido — iniciando kiosko de forma visible..."
+                    Write-Log "ACCION: Comando 'start' recibido - iniciando kiosko de forma visible..."
                     Start-Process -FilePath $exePath -WindowStyle Normal
                     Start-Sleep -Seconds 5
                 } else {
-                    Write-Log "ERROR: No se encontró el ejecutable en el Registro ni en Archivos de Programa."
+                    Write-Log "ERROR: No se encontro el ejecutable en el Registro ni en Archivos de Programa."
                 }
             } else {
-                Write-Log "INFO: Comando 'start' ignorado, kiosko ya está corriendo"
+                Write-Log "INFO: Comando 'start' ignorado, kiosko ya esta corriendo"
             }
         }
 

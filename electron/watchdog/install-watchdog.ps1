@@ -18,31 +18,14 @@ try {
     }
 } catch { }
 
-$action = New-ScheduledTaskAction `
-    -Execute "powershell.exe" `
-    -Argument "-NonInteractive -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$watchdogScript`""
+$regKey = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+$command = "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$watchdogScript`""
 
-$principal = New-ScheduledTaskPrincipal `
-    -GroupId "Users" `
-    -LogonType Interactive `
-    -RunLevel Highest
+Set-ItemProperty -Path $regKey -Name $taskName -Value $command -Force
 
-$trigger = New-ScheduledTaskTrigger -AtLogon
-
-$settings = New-ScheduledTaskSettingsSet `
-    -AllowStartIfOnBatteries `
-    -DontStopIfGoingOnBatteries `
-    -StartWhenAvailable `
-    -RestartCount 3 `
-    -RestartInterval (New-TimeSpan -Minutes 1) `
-    -ExecutionTimeLimit (New-TimeSpan -Seconds 0)
-
-Register-ScheduledTask `
-    -TaskName $taskName `
-    -Action $action `
-    -Trigger $trigger `
-    -Settings $settings `
-    -Principal $principal `
-    -Force
-
-Start-ScheduledTask -TaskName $taskName
+# Iniciar inmediatamente para no requerir cerrar sesión al usuario post-instalación
+try {
+    Start-Process "powershell.exe" -ArgumentList "-WindowStyle Hidden -ExecutionPolicy Bypass -File `"$watchdogScript`"" -WindowStyle Hidden
+} catch {
+    Write-Log "Fallo al iniciar el script post-instalacion: $($_.Exception.Message)"
+}
