@@ -18,6 +18,7 @@ import * as networkService from "./services/networkService.mjs";
 import * as windowManager from "./managers/windowManager.mjs";
 import * as ipcManager from "./managers/ipcManager.mjs";
 import * as configHelper from "./utils/configHelper.mjs";
+import * as updaterService from "./services/updaterService.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -134,6 +135,13 @@ if (!gotTheLock) {
 
     // Iniciar el polling de control remoto del admin
     remoteCommandService.startRemoteCommandPoll(30000);
+
+    // Inicializar Auto-Updater
+    try {
+        updaterService.setupAutoUpdater(apiBaseUrl);
+    } catch (updateErr) {
+        console.error('[Main] Error iniciando Auto-Updater:', updateErr);
+    }
 
     console.log('[Main] Status: Sistema Offline-First inicializado');
   } catch (error) {

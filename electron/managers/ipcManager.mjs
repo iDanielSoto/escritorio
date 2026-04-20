@@ -14,6 +14,7 @@ import syncManager from "../offline/syncManager.mjs";
 import rawQueueManager from "../offline/rawQueueManager.mjs";
 import rawSyncService from "../offline/rawSyncService.mjs";
 import * as networkService from "../services/networkService.mjs";
+import * as updaterService from "../services/updaterService.mjs";
 
 const exec = util.promisify(execCallback);
 
@@ -552,4 +553,10 @@ export function registerIpcHandlers() {
     ipcMain.handle("raw-sync-push-now", async () => rawSyncService.pushPendingRawPunches());
     ipcMain.handle("raw-offline-pending-count", async () => rawQueueManager.getPendingRawCount());
 
+    // ==========================================
+    // Auto-Updater Handlers
+    // ==========================================
+    ipcMain.on("install-update", () => {
+        updaterService.installUpdate();
+    });
 }
