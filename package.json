@@ -19,8 +19,6 @@
     "@vladmandic/face-api": "^1.7.15",
     "better-sqlite3": "^12.6.2",
     "canvas": "^3.2.0",
-    "dotenv": "^16.6.1",
-    "electron-updater": "^6.8.3",
     "face-api.js": "^0.22.2",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
@@ -52,8 +50,7 @@
       "dist/**/*",
       "electron/**/*",
       "!electron/BiometricMiddleware/**/*",
-      "package.json",
-      ".env"
+      "package.json"
     ],
     "extraResources": [
       {
@@ -103,12 +100,6 @@
     "mac": {
       "target": "dmg",
       "icon": "public/icon.icns"
-    },
-    "publish": [
-      {
-        "provider": "generic",
-        "url": "https://ejemplo.com"
-      }
-    ]
+    }
   }
 }

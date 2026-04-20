@@ -11,7 +11,6 @@ import SessionScreen from "./pages/SessionScreen";
 import MaintenanceScreen from "./components/maintenance/MaintenanceScreen";
 import NodeDisabledScreen from "./components/maintenance/NodeDisabledScreen";
 import ConfirmModal from "./components/common/ConfirmModal";
-import UpdateOverlay from "./components/updater/UpdateOverlay";
 
 // Hooks
 import { useAppConfiguration } from "./hooks/useAppConfiguration";
@@ -135,7 +134,6 @@ function App() {
                   {currentPage === "session" && (
                     <SessionScreen onLogout={() => setCurrentPage("kiosk")} />
                   )}
-                  <UpdateOverlay />
                 </div>
                 {renderConfirmModal()}
               </CameraProvider>

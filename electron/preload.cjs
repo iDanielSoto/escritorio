@@ -96,13 +96,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     savePunch: (data) => ipcRenderer.invoke('raw-offline-save-punch', data),
     getPendingCount: () => ipcRenderer.invoke('raw-offline-pending-count'),
     pushNow: () => ipcRenderer.invoke('raw-sync-push-now'),
-  },
-
-  // ===== Auto Updater =====
-  updaterAPI: {
-    onUpdateAvailable: (callback) => ipcRenderer.on('update-available', (event, info) => callback(info)),
-    onDownloadProgress: (callback) => ipcRenderer.on('download-progress', (event, progressObj) => callback(progressObj)),
-    onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', (event, info) => callback(info)),
-    installUpdate: () => ipcRenderer.send('install-update')
   }
 });

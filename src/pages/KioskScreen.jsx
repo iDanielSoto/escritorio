@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import packageJson from "../../package.json";
 import { Camera, User, ClipboardList, Bell, Fingerprint } from "lucide-react";
 import { formatTime, formatDate, formatDay } from "../utils/dateHelpers";
 import { useAvisosGlobales } from "../hooks/useAvisosGlobales";
@@ -643,13 +642,6 @@ export default function KioskScreen() {
           onLoginRequest={handleFacialLoginRequest}
         />
       )}
-
-      {/* Indicador de Versión Minimalista */}
-      <div className="absolute bottom-2 right-3 sm:bottom-3 sm:right-4 z-50 pointer-events-none opacity-30 hover:opacity-100 transition-opacity duration-300">
-        <span className="text-[10px] sm:text-xs text-text-secondary font-mono tracking-wider">
-          v{packageJson.version}
-        </span>
-      </div>
     </div>
   );
 }
