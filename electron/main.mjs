@@ -18,6 +18,7 @@ import * as networkService from "./services/networkService.mjs";
 import * as windowManager from "./managers/windowManager.mjs";
 import * as ipcManager from "./managers/ipcManager.mjs";
 import * as configHelper from "./utils/configHelper.mjs";
+import * as updaterService from "./services/updaterService.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -91,6 +92,15 @@ if (!gotTheLock) {
 
   // Crear la ventana principal
   const mainWindow = windowManager.createWindow();
+
+  // ── Auto-Updater ──────────────────────────────────────────────────────────
+  // Solo activo en producción (app empaquetada). En desarrollo queda inactivo
+  // para no interrumpir el flujo de trabajo.
+  if (app.isPackaged) {
+    updaterService.initAutoUpdater();
+    // Retraso de 10 s para que el kiosko arranque completamente antes de buscar
+    setTimeout(() => updaterService.checkForUpdates(), 10000);
+  }
 
   // Bloqueo preventivo en el nivel enfocado (BrowserWindow Input)
   if (isProd) {

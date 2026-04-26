@@ -14,6 +14,7 @@ import syncManager from "../offline/syncManager.mjs";
 import rawQueueManager from "../offline/rawQueueManager.mjs";
 import rawSyncService from "../offline/rawSyncService.mjs";
 import * as networkService from "../services/networkService.mjs";
+import * as updaterService from "../services/updaterService.mjs";
 
 const exec = util.promisify(execCallback);
 
@@ -551,5 +552,27 @@ export function registerIpcHandlers() {
 
     ipcMain.handle("raw-sync-push-now", async () => rawSyncService.pushPendingRawPunches());
     ipcMain.handle("raw-offline-pending-count", async () => rawQueueManager.getPendingRawCount());
+
+    // ==========================================
+    // Auto-Updater Handlers
+    // ==========================================
+
+    /** Fuerza una verificación manual de actualizaciones desde el renderer. */
+    ipcMain.handle('updater-check', async () => {
+        updaterService.checkForUpdates();
+        return { success: true };
+    });
+
+    /** Inicia la descarga del paquete de actualización. */
+    ipcMain.handle('updater-download', async () => {
+        updaterService.downloadUpdate();
+        return { success: true };
+    });
+
+    /** Cierra la app e instala la actualización descargada. */
+    ipcMain.handle('updater-install', async () => {
+        updaterService.quitAndInstall();
+        return { success: true };
+    });
 
 }

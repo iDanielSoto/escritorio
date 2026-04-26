@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { X, HardDrive, Save, RefreshCw, AlertCircle, Loader2, CheckCircle, Trash2, Power } from "lucide-react";
+import { X, HardDrive, Save, RefreshCw, AlertCircle, Loader2, CheckCircle, Trash2, Power, Download, ArrowUpCircle } from "lucide-react";
 import { getSystemInfoAdvanced } from "../../utils/systemInfoAdvanced";
 import {
   obtenerEscritorio,
@@ -10,10 +10,26 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { deviceMonitorService } from "../../services/deviceMonitorService";
 import DynamicLoader from "../common/DynamicLoader";
+import { useUpdater } from "../../context/UpdaterContext";
 
 export default function GeneralNodoModal({ onClose, onBack, inline = false, isAdminProp }) {
   const { user, isAdmin: checkIsAdmin } = useAuth();
   const isAdmin = isAdminProp !== undefined ? isAdminProp : (typeof checkIsAdmin === "function" ? checkIsAdmin() : false);
+
+  // Estado del updater
+  const {
+    status: updaterStatus,
+    updateInfo,
+    progress,
+    errorMsg: updaterError,
+    hasUpdate,
+    checkForUpdates,
+    startDownload,
+    installUpdate,
+    fmtBytes,
+    fmtSpeed,
+    fmtDate,
+  } = useUpdater();
 
   const [isDetecting, setIsDetecting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -498,24 +514,158 @@ export default function GeneralNodoModal({ onClose, onBack, inline = false, isAd
 
               {/* Opciones de Administrador */}
               {isAdmin && (
-                <div className="mt-6 flex justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={handleShutdown}
-                    className="px-4 py-2 text-sm text-orange-500 border border-orange-500/50 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:border-orange-500 rounded-lg font-medium transition-all flex items-center gap-2"
-                  >
-                    <Power className="w-4 h-4" />
-                    Apagar sistema
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleResetNode}
-                    className="px-4 py-2 text-sm text-red-500 border border-red-500/50 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-500 rounded-lg font-medium transition-all flex items-center gap-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    Eliminar Nodo
-                  </button>
-                </div>
+                <>
+                  {/* ── Panel de Actualización del Sistema ── */}
+                  <div className="mt-4 bg-bg-secondary border border-border-subtle rounded-xl overflow-hidden">
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-border-subtle">
+                      <ArrowUpCircle className="w-4 h-4 text-[#1976D2]" />
+                      <h4 className="font-semibold text-text-primary text-sm">Actualización del Sistema</h4>
+                      {hasUpdate && (
+                        <span className="ml-auto text-[10px] font-bold bg-red-500/10 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full animate-pulse">
+                          Nueva versión
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="p-4">
+                      {/* idle / latest — Al día */}
+                      {(updaterStatus === 'idle' || updaterStatus === 'latest') && (
+                        <div className="flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <div>
+                              <p className="text-xs font-semibold text-text-primary">Versión actual: v{__APP_VERSION__}</p>
+                              {updaterStatus === 'latest' && (
+                                <p className="text-[10px] text-green-600 dark:text-green-400">Al día ✓</p>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            onClick={checkForUpdates}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-[#1976D2]/10 dark:bg-blue-900/40 text-[#1976D2] dark:text-blue-300 rounded-lg hover:bg-[#1976D2]/20 transition-colors font-medium flex-shrink-0"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            Buscar actualizaciones
+                          </button>
+                        </div>
+                      )}
+
+                      {/* checking */}
+                      {updaterStatus === 'checking' && (
+                        <div className="flex items-center gap-2 text-text-secondary">
+                          <Loader2 className="w-4 h-4 animate-spin text-[#1976D2]" />
+                          <span className="text-xs">Buscando actualizaciones...</span>
+                        </div>
+                      )}
+
+                      {/* available */}
+                      {updaterStatus === 'available' && updateInfo && (
+                        <div className="space-y-3">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                              <Download className="w-4 h-4 text-[#1976D2]" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-bold text-text-primary">Nueva versión disponible</p>
+                              <p className="text-[11px] text-[#1976D2] font-mono font-semibold">v{updateInfo.version}</p>
+                              {updateInfo.releaseDate && (
+                                <p className="text-[10px] text-text-secondary mt-0.5">{fmtDate(updateInfo.releaseDate)}</p>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            onClick={startDownload}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-[#1976D2] to-[#1565C0] text-white rounded-lg text-xs font-bold hover:from-[#1565C0] hover:to-[#0D47A1] transition-all shadow-md shadow-blue-500/20"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                            Descargar actualización
+                          </button>
+                        </div>
+                      )}
+
+                      {/* downloading */}
+                      {updaterStatus === 'downloading' && (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-text-primary">Descargando...</span>
+                            <span className="text-xs font-mono text-[#1976D2]">{progress?.percent ?? 0}%</span>
+                          </div>
+                          <div className="h-2 bg-bg-primary rounded-full overflow-hidden">
+                            <div
+                              className="h-full bg-gradient-to-r from-[#1976D2] to-[#42A5F5] rounded-full transition-all duration-500"
+                              style={{ width: `${progress?.percent ?? 0}%` }}
+                            />
+                          </div>
+                          {progress && (
+                            <div className="flex justify-between text-[10px] text-text-secondary font-mono">
+                              <span>{fmtBytes(progress.transferred)} / {fmtBytes(progress.total)}</span>
+                              <span>{fmtSpeed(progress.bytesPerSecond)}</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* downloaded */}
+                      {updaterStatus === 'downloaded' && (
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle className="w-4 h-4 text-green-500" />
+                            <div>
+                              <p className="text-xs font-bold text-text-primary">Lista para instalar</p>
+                              {updateInfo?.version && (
+                                <p className="text-[10px] text-green-600 dark:text-green-400 font-mono">v{updateInfo.version}</p>
+                              )}
+                            </div>
+                          </div>
+                          <button
+                            onClick={installUpdate}
+                            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-500 text-white rounded-lg text-xs font-bold hover:from-green-700 hover:to-green-600 transition-all shadow-md shadow-green-500/20"
+                          >
+                            <RefreshCw className="w-3.5 h-3.5" />
+                            Reiniciar e Instalar
+                          </button>
+                        </div>
+                      )}
+
+                      {/* error */}
+                      {updaterStatus === 'error' && (
+                        <div className="flex items-start gap-2">
+                          <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-red-500">Error al actualizar</p>
+                            <p className="text-[10px] text-text-secondary mt-0.5">{updaterError}</p>
+                            <button
+                              onClick={checkForUpdates}
+                              className="mt-2 text-[10px] text-[#1976D2] hover:underline flex items-center gap-1"
+                            >
+                              <RefreshCw className="w-2.5 h-2.5" /> Reintentar
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ── Botones peligrosos ── */}
+                  <div className="mt-4 flex justify-end gap-3">
+                    <button
+                      type="button"
+                      onClick={handleShutdown}
+                      className="px-4 py-2 text-sm text-orange-500 border border-orange-500/50 hover:bg-orange-50 dark:hover:bg-orange-500/10 hover:border-orange-500 rounded-lg font-medium transition-all flex items-center gap-2"
+                    >
+                      <Power className="w-4 h-4" />
+                      Apagar sistema
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleResetNode}
+                      className="px-4 py-2 text-sm text-red-500 border border-red-500/50 hover:bg-red-50 dark:hover:bg-red-500/10 hover:border-red-500 rounded-lg font-medium transition-all flex items-center gap-2"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Eliminar Nodo
+                    </button>
+                  </div>
+                </>
               )}
             </>
           )}

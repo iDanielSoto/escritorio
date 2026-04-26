@@ -15,6 +15,7 @@ import { ConnectionStatusPanel } from "../components/common/ConnectionStatus";
 import AsistenciaHuella from "../components/kiosk/AsistenciaHuella";
 import AsistenciaFacial from "../components/kiosk/AsistenciaFacial";
 import DynamicLoader from "../components/common/DynamicLoader";
+import { useUpdater } from "../context/UpdaterContext";
 
 import { useKioskConfiguration } from "../hooks/useKioskConfiguration";
 import { useInactivityTimer } from "../hooks/useInactivityTimer";
@@ -25,6 +26,7 @@ export default function KioskScreen() {
   // Hook de conectividad
   const { isInternetConnected, isDatabaseConnected } = useConnectivity();
   const { playSound, speak } = useSound();
+  const { hasUpdate } = useUpdater();
 
   const [time, setTime] = useState(new Date());
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -293,7 +295,7 @@ export default function KioskScreen() {
             }`}
         >
           <User className="w-5 h-5 sm:w-6 sm:h-6 2xl:w-8 2xl:h-8" />
-          <span className="text-[10px] sm:text-xs 2xl:text-base font-bold hidden sm:block">Usuario</span>
+          <span className="text-[10px] sm:text-xs 2xl:text-base font-bold hidden sm:block">Sesión</span>
         </button>
 
         <button
@@ -312,6 +314,19 @@ export default function KioskScreen() {
           isCameraConnected={ordenCredenciales?.facial?.activo && hasCameraRegistered ? isCameraConnected : null}
           isReaderConnected={ordenCredenciales?.dactilar?.activo ? isReaderConnected : null}
         />
+
+        {/* Badge de versión — al fondo de la barra lateral */}
+        <div className="relative pointer-events-none select-none flex items-center justify-center">
+          <span className="text-[9px] font-mono text-[#1976D2]/70 tracking-widest">
+            v{__APP_VERSION__}
+          </span>
+          {hasUpdate && (
+            <span
+              className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"
+              title="Hay una actualización disponible"
+            />
+          )}
+        </div>
       </div>
 
       {/* Contenido principal */}

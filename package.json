@@ -1,7 +1,7 @@
 {
   "name": "sistema-asistencia",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sistema de Asistencia Kiosko - FASITLAC",
   "author": "FASITLAC",
   "type": "module",
@@ -13,12 +13,14 @@
     "electron": "cross-env NODE_ENV=development electron .",
     "electron:dev": "concurrently \"npm run dev\" \"wait-on http://127.0.0.1:5174 && cross-env NODE_ENV=development electron .\"",
     "electron:build": "npm run build && electron-builder",
+    "release": "npm run build && electron-builder -p always",
     "rebuild": "npx electron-rebuild -f -w better-sqlite3"
   },
   "dependencies": {
     "@vladmandic/face-api": "^1.7.15",
     "better-sqlite3": "^12.6.2",
     "canvas": "^3.2.0",
+    "electron-updater": "^6.8.3",
     "face-api.js": "^0.22.2",
     "lucide-react": "^0.263.1",
     "react": "^18.2.0",
@@ -43,6 +45,13 @@
   "build": {
     "appId": "com.fasitlac.checador",
     "productName": "Sistema de Asistencia",
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "iDanielSoto",
+        "repo": "escritorio"
+      }
+    ],
     "directories": {
       "output": "release"
     },

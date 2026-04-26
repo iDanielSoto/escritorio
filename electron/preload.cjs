@@ -96,5 +96,37 @@ contextBridge.exposeInMainWorld('electronAPI', {
     savePunch: (data) => ipcRenderer.invoke('raw-offline-save-punch', data),
     getPendingCount: () => ipcRenderer.invoke('raw-offline-pending-count'),
     pushNow: () => ipcRenderer.invoke('raw-sync-push-now'),
-  }
+  },
+
+  // ===== Auto-Updater =====
+  updater: {
+    /** Fuerza una verificación manual de actualizaciones. */
+    check: () => ipcRenderer.invoke('updater-check'),
+
+    /** Inicia la descarga de la actualización disponible. */
+    download: () => ipcRenderer.invoke('updater-download'),
+
+    /** Instala la actualización descargada y reinicia la app. */
+    install: () => ipcRenderer.invoke('updater-install'),
+
+    /**
+     * Suscribe a eventos de estado del updater.
+     * @returns {Function} cleanup — llámala en el useEffect cleanup para desuscribir.
+     */
+    onStatus: (callback) => {
+      const handler = (event, data) => callback(data);
+      ipcRenderer.on('updater-status', handler);
+      return () => ipcRenderer.removeListener('updater-status', handler);
+    },
+
+    /**
+     * Suscribe a eventos de progreso de descarga.
+     * @returns {Function} cleanup — llámala en el useEffect cleanup para desuscribir.
+     */
+    onProgress: (callback) => {
+      const handler = (event, data) => callback(data);
+      ipcRenderer.on('updater-progress', handler);
+      return () => ipcRenderer.removeListener('updater-progress', handler);
+    },
+  },
 });

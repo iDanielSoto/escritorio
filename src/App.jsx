@@ -5,12 +5,14 @@ import { AuthProvider } from "./context/AuthContext";
 import { CameraProvider } from "./context/CameraContext";
 import { DeviceMonitoringProvider } from "./context/DeviceMonitoringContext";
 import { ConnectivityProvider } from "./context/ConnectivityContext";
+import { UpdaterProvider } from "./context/UpdaterContext";
 import AffiliationRequest from "./pages/AffiliationRequest";
 import KioskScreen from "./pages/KioskScreen";
 import SessionScreen from "./pages/SessionScreen";
 import MaintenanceScreen from "./components/maintenance/MaintenanceScreen";
 import NodeDisabledScreen from "./components/maintenance/NodeDisabledScreen";
 import ConfirmModal from "./components/common/ConfirmModal";
+import UpdaterOverlay from "./components/UpdaterOverlay";
 
 // Hooks
 import { useAppConfiguration } from "./hooks/useAppConfiguration";
@@ -80,13 +82,16 @@ function App() {
   if (isLoading) {
     return (
       <ThemeProvider>
-        <div className="App h-screen w-screen flex items-center justify-center bg-bg-primary">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-text-secondary">Cargando...</p>
+        <UpdaterProvider>
+          <UpdaterOverlay />
+          <div className="App h-screen w-screen flex items-center justify-center bg-bg-primary">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+              <p className="text-text-secondary">Cargando...</p>
+            </div>
           </div>
-        </div>
-        {renderConfirmModal()}
+          {renderConfirmModal()}
+        </UpdaterProvider>
       </ThemeProvider>
     );
   }
@@ -95,11 +100,14 @@ function App() {
   if (isMaintenance) {
     return (
       <ThemeProvider>
-        <MaintenanceScreen
-          isChecking={isCheckingMaintenance}
-          onRetry={window.location.reload}
-        />
-        {renderConfirmModal()}
+        <UpdaterProvider>
+          <UpdaterOverlay />
+          <MaintenanceScreen
+            isChecking={isCheckingMaintenance}
+            onRetry={window.location.reload}
+          />
+          {renderConfirmModal()}
+        </UpdaterProvider>
       </ThemeProvider>
     );
   }
@@ -108,39 +116,45 @@ function App() {
   if (isNodeDisabled && nodeInfo && currentPage !== "affiliation") {
     return (
       <ThemeProvider>
-        <NodeDisabledScreen
-          nodeName={nodeInfo.nombre}
-          isChecking={isCheckingNode}
-          onRetry={checkNodeStatus}
-          onNewAffiliation={handleNewAffiliation}
-        />
-        {renderConfirmModal()}
+        <UpdaterProvider>
+          <UpdaterOverlay />
+          <NodeDisabledScreen
+            nodeName={nodeInfo.nombre}
+            isChecking={isCheckingNode}
+            onRetry={checkNodeStatus}
+            onNewAffiliation={handleNewAffiliation}
+          />
+          {renderConfirmModal()}
+        </UpdaterProvider>
       </ThemeProvider>
     );
   }
 
   return (
     <ThemeProvider>
-      <ConnectivityProvider>
-        <SoundProvider>
-          <AuthProvider>
-            <DeviceMonitoringProvider>
-              <CameraProvider>
-                <div className="App">
-                  {currentPage === "affiliation" && (
-                    <AffiliationRequest onComplete={handleAffiliationComplete} />
-                  )}
-                  {currentPage === "kiosk" && <KioskScreen />}
-                  {currentPage === "session" && (
-                    <SessionScreen onLogout={() => setCurrentPage("kiosk")} />
-                  )}
-                </div>
-                {renderConfirmModal()}
-              </CameraProvider>
-            </DeviceMonitoringProvider>
-          </AuthProvider>
-        </SoundProvider>
-      </ConnectivityProvider>
+      <UpdaterProvider>
+        <UpdaterOverlay />
+        <ConnectivityProvider>
+          <SoundProvider>
+            <AuthProvider>
+              <DeviceMonitoringProvider>
+                <CameraProvider>
+                  <div className="App">
+                    {currentPage === "affiliation" && (
+                      <AffiliationRequest onComplete={handleAffiliationComplete} />
+                    )}
+                    {currentPage === "kiosk" && <KioskScreen />}
+                    {currentPage === "session" && (
+                      <SessionScreen onLogout={() => setCurrentPage("kiosk")} />
+                    )}
+                  </div>
+                  {renderConfirmModal()}
+                </CameraProvider>
+              </DeviceMonitoringProvider>
+            </AuthProvider>
+          </SoundProvider>
+        </ConnectivityProvider>
+      </UpdaterProvider>
     </ThemeProvider>
   );
 }

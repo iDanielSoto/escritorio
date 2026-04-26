@@ -41,6 +41,7 @@ import NoticeDetailModal from "../components/kiosk/NoticeDetailModal";
 // Hooks
 import { useEmployeeData } from "../hooks/useEmployeeData";
 import { useGlobalDeviceStatus } from "../context/DeviceMonitoringContext";
+import { useUpdater } from "../context/UpdaterContext";
 
 export default function SessionScreen({ onLogout, usuario, isReaderConnected = false }) {
   const [time, setTime] = useState(new Date());
@@ -60,6 +61,9 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
   const [selectedBiometricType, setSelectedBiometricType] = useState('huella');
   const [targetEmployeeId, setTargetEmployeeId] = useState(null);
   const [timeLeft, setTimeLeft] = useState(15); // 15 segundos para cierre de sesión
+
+  // Updater status
+  const { status: updaterStatus } = useUpdater();
 
   // Custom hook para datos del empleado
   const { datosCompletos, loadingEmpleado, departamentos, notices, setNotices } = useEmployeeData(usuario);
@@ -396,7 +400,7 @@ export default function SessionScreen({ onLogout, usuario, isReaderConnected = f
       )}
 
       {/* Indicador de cierre de sesión inminente (Estilo Minimalista Afiliación) */}
-      {timeLeft <= 5 && (
+      {timeLeft <= 5 && updaterStatus !== 'downloading' && updaterStatus !== 'downloaded' && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-bg-primary/80 backdrop-blur-md p-4 animate-in fade-in duration-300">
           <div className="max-w-xl w-full px-6 py-12 animate-slide-up">
             <div className="bg-bg-secondary/40 border border-border-subtle rounded-lg p-12 text-center shadow-xl relative overflow-hidden group">
