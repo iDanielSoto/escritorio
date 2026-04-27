@@ -148,12 +148,6 @@ export default function KioskScreen() {
   const handleFingerprintSuccess = async (data) => {
     console.log("✅ Asistencia registrada con huella:", data);
 
-    agregarEvento({
-      user: data.nombre || "Empleado",
-      action: "Registro de asistencia exitoso - Huella digital",
-      type: "success",
-    });
-
     const tipo = data.tipo_movimiento === 'SALIDA' ? 'salida' : 'entrada';
     playSound('success');
     speak(`Registro ${tipo} exitoso`);
@@ -192,12 +186,6 @@ export default function KioskScreen() {
   // Manejar registro exitoso de facial
   const handleFacialSuccess = async (data) => {
     console.log("Asistencia registrada con facial:", data);
-
-    agregarEvento({
-      user: data.empleado?.nombre || "Empleado",
-      action: `${data.tipo_movimiento === "SALIDA" ? "Salida" : "Entrada"} registrada - Reconocimiento facial`,
-      type: "success",
-    });
   };
 
   // Manejar solicitud de login desde el modal de asistencia facial
@@ -602,11 +590,6 @@ export default function KioskScreen() {
           onClose={() => setShowPinModal(false)}
           onSuccess={(data) => {
             console.log("✅ Asistencia registrada con PIN:", data);
-            agregarEvento({
-              user: data.empleado?.nombre || "Empleado",
-              action: `${data.tipo_movimiento === "SALIDA" ? "Salida" : "Entrada"} registrada - PIN`,
-              type: "success",
-            });
           }}
           onLoginRequest={(usuarioData) => {
             // Login directo con los datos del usuario autenticado

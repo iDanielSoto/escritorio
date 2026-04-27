@@ -32,6 +32,14 @@ const getStatusStyles = (type) => {
         icon: Info,
         label: "Info"
       };
+    case "warning":
+      return {
+        bg: "bg-yellow-500/10",
+        text: "text-yellow-500",
+        border: "border-yellow-500/20",
+        icon: AlertCircle,
+        label: "Pendiente"
+      };
     default:
       return {
         bg: "bg-text-tertiary/10",
@@ -49,8 +57,8 @@ export default function BitacoraModal({ onClose }) {
 
   useEffect(() => {
     // Función para cargar eventos
-    const cargarEventos = () => {
-      const eventosDinamicos = obtenerBitacora();
+    const cargarEventos = async () => {
+      const eventosDinamicos = await obtenerBitacora();
       setEventos(eventosDinamicos);
       setLoading(false);
     };
@@ -137,8 +145,7 @@ export default function BitacoraModal({ onClose }) {
                     </div>
 
                     {/* Status Badge - More compact */}
-                    <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider ${styles.bg} ${styles.text} ${styles.border}`}>
-                      <StatusIcon className="w-3 h-3" />
+                    <div className={`flex items-center px-2 py-0.5 rounded-full border text-[9px] font-bold uppercase tracking-wider ${styles.bg} ${styles.text} ${styles.border}`}>
                       <span>{styles.label}</span>
                     </div>
                   </div>

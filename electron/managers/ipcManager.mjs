@@ -575,4 +575,14 @@ export function registerIpcHandlers() {
         return { success: true };
     });
 
+    // ==========================================
+    // Bitácora Handlers
+    // ==========================================
+    ipcMain.handle('bitacora-save-event', async (event, data) => sqliteManager.saveBitacoraEvent(data));
+    ipcMain.handle('bitacora-get-events', async () => sqliteManager.getBitacoraEvents());
+    ipcMain.handle('bitacora-clear-events', async () => {
+        sqliteManager.clearBitacoraEvents();
+        return { success: true };
+    });
+
 }

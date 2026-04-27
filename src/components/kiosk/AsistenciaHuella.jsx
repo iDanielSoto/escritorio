@@ -17,6 +17,7 @@ import {
 import { guardarSesion } from "../../services/biometricAuthService";
 import { obtenerEscritorio } from "../../services/escritorioService";
 import { API_CONFIG, fetchApi } from "../../config/apiEndPoint";
+import { agregarEvento } from "../../services/bitacoraService";
 
 import { useConnectivity } from "../../hooks/useConnectivity";
 
@@ -368,6 +369,12 @@ export default function AsistenciaHuella({
         // ── Rechazado definitivamente por el servidor ──
         addMessage(`❌ Registro rechazado: ${syncResult.errorServidor}`, "error");
 
+        agregarEvento({
+          user: empleadoData?.nombre || "Usuario",
+          action: `Registro rechazado: ${syncResult.errorServidor} - Huella`,
+          type: "error",
+        });
+
         nuevoResultado = {
           success: false,
           message: syncResult.errorServidor,
@@ -381,9 +388,15 @@ export default function AsistenciaHuella({
         const tipoMovimiento = syncResult.tipo === "salida" ? "SALIDA" : "ENTRADA";
         // importar obtenerInfoClasificacion del servicio compartido
         const { obtenerInfoClasificacion } = await import("../../services/asistenciaLogicService");
-        const { estadoTexto } = obtenerInfoClasificacion(syncResult.estado, syncResult.tipo);
+        const { estadoTexto, tipoEvento } = obtenerInfoClasificacion(syncResult.estado, syncResult.tipo);
 
         addMessage(`✅ ${tipoMovimiento} registrada (${estadoTexto})`, "success");
+
+        agregarEvento({
+          user: empleadoData?.nombre || "Usuario",
+          action: `${tipoMovimiento} registrada (${estadoTexto}) - Huella`,
+          type: tipoEvento || "success",
+        });
 
         nuevoResultado = {
           success: true,
@@ -399,6 +412,12 @@ export default function AsistenciaHuella({
       } else {
         // ── Pendiente: sin conexión o push falló temporalmente ──
         addMessage("⏳ Asistencia pendiente de sincronizar", "warning");
+
+        agregarEvento({
+          user: empleadoData?.nombre || "Usuario",
+          action: "Asistencia guardada localmente (pendiente de sincronizar) - Huella",
+          type: "warning",
+        });
 
         nuevoResultado = {
           success: true,
@@ -445,6 +464,12 @@ export default function AsistenciaHuella({
       }
 
       addMessage(`❌ Error: ${finalErrorMessage}`, "error");
+
+      agregarEvento({
+        user: empleadoData?.nombre || empleadoId || "Usuario",
+        action: `Error en registro con Huella - ${finalErrorMessage}`,
+        type: "error",
+      });
 
       const responseData = error.responseData;
       const isBlockCompletedError = error.message && (

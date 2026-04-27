@@ -157,6 +157,17 @@ function runMigrations() {
       ON cache_horarios(empleado_id);
     CREATE INDEX IF NOT EXISTS idx_cache_biometricos_escritorio
       ON cache_biometricos(escritorio_id);
+
+    -- Bitácora de Eventos Locales
+    CREATE TABLE IF NOT EXISTS bitacora_eventos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user TEXT NOT NULL,
+      action TEXT NOT NULL,
+      type TEXT NOT NULL,
+      timestamp TEXT NOT NULL,
+      fecha TEXT NOT NULL,
+      created_at TEXT DEFAULT (datetime('now', 'localtime'))
+    );
   `);
 
   // Inicializar sync_metadata si están vacías
@@ -887,6 +898,61 @@ export function getDatabase() {
   return db;
 }
 
+// ============================================================
+// BITÁCORA DE EVENTOS LOCALES
+// ============================================================
+
+/**
+ * Guarda un evento en la bitácora local y mantiene solo los últimos 500
+ * @param {Object} event
+ */
+export function saveBitacoraEvent(event) {
+  if (!db) return null;
+  const stmt = db.prepare(`
+    INSERT INTO bitacora_eventos (user, action, type, timestamp, fecha)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+  
+  const result = stmt.run(
+    event.user || 'Usuario desconocido',
+    event.action || 'Acción sin descripción',
+    event.type || 'info',
+    event.timestamp,
+    event.fecha || new Date().toISOString()
+  );
+
+  // Limpiar eventos antiguos para mantener solo 500
+  db.exec(`
+    DELETE FROM bitacora_eventos 
+    WHERE id NOT IN (
+      SELECT id FROM bitacora_eventos ORDER BY id DESC LIMIT 500
+    )
+  `);
+
+  return result.lastInsertRowid;
+}
+
+/**
+ * Obtiene los últimos 100 eventos de la bitácora
+ * @returns {Array}
+ */
+export function getBitacoraEvents() {
+  if (!db) return [];
+  const stmt = db.prepare(`
+    SELECT * FROM bitacora_eventos 
+    ORDER BY id DESC LIMIT 100
+  `);
+  return stmt.all();
+}
+
+/**
+ * Limpia la tabla de bitácora
+ */
+export function clearBitacoraEvents() {
+  if (!db) return;
+  db.exec('DELETE FROM bitacora_eventos');
+}
+
 export default {
   initDatabase,
   closeDatabase,
@@ -919,4 +985,8 @@ export default {
   getSyncMetadata,
   getAllSyncMetadata,
   setReferenciaData,
+  // Bitácora
+  saveBitacoraEvent,
+  getBitacoraEvents,
+  clearBitacoraEvents,
 };

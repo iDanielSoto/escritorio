@@ -2,18 +2,47 @@
 // Servicio para gestionar la bitácora de eventos
 
 /**
+ * Acorta y formatea mensajes largos para una mejor visualización en la bitácora
+ * @param {string} mensaje - Mensaje original
+ * @returns {string} - Mensaje formateado y acortado
+ */
+const formatearMensaje = (mensaje) => {
+  if (!mensaje) return 'Acción sin descripción';
+
+  let nuevoMensaje = mensaje;
+
+  // 1. Acortar mensajes de falta directa
+  if (nuevoMensaje.includes('falta directa')) {
+    nuevoMensaje = 'Rechazado: Falta directa en el turno';
+  }
+  
+  // 2. Acortar errores genéricos de PIN o Facial
+  nuevoMensaje = nuevoMensaje.replace(/Error en registro con (PIN|Facial) -/g, 'Error ($1):');
+
+  // 3. Acortar prefijos de rechazo
+  nuevoMensaje = nuevoMensaje.replace(/Registro rechazado(?: por el servidor)?:/g, 'Rechazado:');
+
+  // 4. Acortar mensajes de offline sync
+  nuevoMensaje = nuevoMensaje.replace(/Asistencia guardada localmente \(pendiente de sincronizar\)/g, 'Guardado local');
+
+  // 5. Acortar intentos fallidos por cuentas desvinculadas
+  nuevoMensaje = nuevoMensaje.replace(/Intento de registro - Usuario no asociado a empleado/g, 'Rechazado: Usuario sin empleado asignado');
+
+  // 6. Simplificar sufijos de métodos (- PIN -> (PIN))
+  nuevoMensaje = nuevoMensaje.replace(/ - (PIN|Facial)$/, ' ($1)');
+
+  return nuevoMensaje.trim();
+};
+
+/**
  * Agregar un evento a la bitácora
  * @param {Object} evento - Datos del evento
  * @param {string} evento.user - Nombre del usuario
  * @param {string} evento.action - Descripción de la acción
  * @param {string} evento.type - Tipo de evento: 'success', 'error', 'info'
  */
-export const agregarEvento = (evento) => {
+export const agregarEvento = async (evento) => {
   try {
-    // Obtener bitácora existente del localStorage
-    const bitacora = obtenerBitacora();
-
-    // Crear timestamp actual
     const now = new Date();
     const timestamp = now.toLocaleTimeString('es-MX', {
       hour: '2-digit',
@@ -22,45 +51,50 @@ export const agregarEvento = (evento) => {
       hour12: false,
     });
 
-    // Crear nuevo evento
+    const actionFormateada = formatearMensaje(evento.action);
+
     const nuevoEvento = {
       timestamp,
       user: evento.user || 'Usuario desconocido',
-      action: evento.action || 'Acción sin descripción',
+      action: actionFormateada,
       type: evento.type || 'info',
       fecha: now.toISOString(),
     };
 
-    // Verificar si ya existe un evento similar en los últimos 2 segundos
-    const eventosDuplicados = bitacora.filter((ev) => {
-      const diffMs = now - new Date(ev.fecha);
-      return (
-        diffMs < 2000 && // Menos de 2 segundos de diferencia
-        ev.user === nuevoEvento.user &&
-        ev.action === nuevoEvento.action &&
-        ev.type === nuevoEvento.type
-      );
-    });
+    if (window.electronAPI && window.electronAPI.bitacora) {
+      // Uso de SQLite a través de Electron IPC
+      await window.electronAPI.bitacora.saveEvent(nuevoEvento);
+      console.log('📝 Evento agregado a bitácora (SQLite):', nuevoEvento);
+      return nuevoEvento;
+    } else {
+      // Fallback a localStorage
+      const bitacora = await obtenerBitacora();
 
-    // Si hay duplicados recientes, no agregar
-    if (eventosDuplicados.length > 0) {
-      console.log('⚠️ Evento duplicado detectado, no se agregará:', nuevoEvento);
-      return eventosDuplicados[0];
+      // Verificar si ya existe un evento similar en los últimos 2 segundos
+      const eventosDuplicados = bitacora.filter((ev) => {
+        const diffMs = now - new Date(ev.fecha);
+        return (
+          diffMs < 2000 &&
+          ev.user === nuevoEvento.user &&
+          ev.action === nuevoEvento.action &&
+          ev.type === nuevoEvento.type
+        );
+      });
+
+      if (eventosDuplicados.length > 0) {
+        console.log('⚠️ Evento duplicado detectado, no se agregará:', nuevoEvento);
+        return eventosDuplicados[0];
+      }
+
+      bitacora.unshift(nuevoEvento);
+      if (bitacora.length > 100) {
+        bitacora.splice(100);
+      }
+
+      localStorage.setItem('eventLog', JSON.stringify(bitacora));
+      console.log('📝 Evento agregado a bitácora (localStorage):', nuevoEvento);
+      return nuevoEvento;
     }
-
-    // Agregar al inicio del array (eventos más recientes primero)
-    bitacora.unshift(nuevoEvento);
-
-    // Limitar la bitácora a los últimos 100 eventos
-    if (bitacora.length > 100) {
-      bitacora.splice(100);
-    }
-
-    // Guardar en localStorage
-    localStorage.setItem('eventLog', JSON.stringify(bitacora));
-
-    console.log('📝 Evento agregado a bitácora:', nuevoEvento);
-    return nuevoEvento;
   } catch (error) {
     console.error('❌ Error al agregar evento a bitácora:', error);
     return null;
@@ -69,12 +103,17 @@ export const agregarEvento = (evento) => {
 
 /**
  * Obtener todos los eventos de la bitácora
- * @returns {Array} - Array de eventos
+ * @returns {Promise<Array>} - Array de eventos
  */
-export const obtenerBitacora = () => {
+export const obtenerBitacora = async () => {
   try {
-    const bitacoraStr = localStorage.getItem('eventLog');
-    return bitacoraStr ? JSON.parse(bitacoraStr) : [];
+    if (window.electronAPI && window.electronAPI.bitacora) {
+      const eventos = await window.electronAPI.bitacora.getEvents();
+      return eventos || [];
+    } else {
+      const bitacoraStr = localStorage.getItem('eventLog');
+      return bitacoraStr ? JSON.parse(bitacoraStr) : [];
+    }
   } catch (error) {
     console.error('❌ Error al obtener bitácora:', error);
     return [];
@@ -84,10 +123,15 @@ export const obtenerBitacora = () => {
 /**
  * Limpiar la bitácora
  */
-export const limpiarBitacora = () => {
+export const limpiarBitacora = async () => {
   try {
-    localStorage.removeItem('eventLog');
-    console.log('🗑️ Bitácora limpiada');
+    if (window.electronAPI && window.electronAPI.bitacora) {
+      await window.electronAPI.bitacora.clearEvents();
+      console.log('🗑️ Bitácora limpiada (SQLite)');
+    } else {
+      localStorage.removeItem('eventLog');
+      console.log('🗑️ Bitácora limpiada (localStorage)');
+    }
   } catch (error) {
     console.error('❌ Error al limpiar bitácora:', error);
   }
@@ -96,11 +140,11 @@ export const limpiarBitacora = () => {
 /**
  * Obtener eventos por tipo
  * @param {string} tipo - Tipo de evento: 'success', 'error', 'info'
- * @returns {Array} - Array de eventos filtrados
+ * @returns {Promise<Array>} - Array de eventos filtrados
  */
-export const obtenerEventosPorTipo = (tipo) => {
+export const obtenerEventosPorTipo = async (tipo) => {
   try {
-    const bitacora = obtenerBitacora();
+    const bitacora = await obtenerBitacora();
     return bitacora.filter((evento) => evento.type === tipo);
   } catch (error) {
     console.error('❌ Error al filtrar eventos por tipo:', error);
@@ -110,11 +154,11 @@ export const obtenerEventosPorTipo = (tipo) => {
 
 /**
  * Obtener eventos de hoy
- * @returns {Array} - Array de eventos de hoy
+ * @returns {Promise<Array>} - Array de eventos de hoy
  */
-export const obtenerEventosDeHoy = () => {
+export const obtenerEventosDeHoy = async () => {
   try {
-    const bitacora = obtenerBitacora();
+    const bitacora = await obtenerBitacora();
     const hoy = new Date().toLocaleDateString('es-MX');
 
     return bitacora.filter((evento) => {

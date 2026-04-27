@@ -129,4 +129,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
       return () => ipcRenderer.removeListener('updater-progress', handler);
     },
   },
+
+  // ===== Bitácora =====
+  bitacora: {
+    saveEvent: (data) => ipcRenderer.invoke('bitacora-save-event', data),
+    getEvents: () => ipcRenderer.invoke('bitacora-get-events'),
+    clearEvents: () => ipcRenderer.invoke('bitacora-clear-events'),
+  },
 });
